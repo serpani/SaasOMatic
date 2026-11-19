@@ -3,7 +3,7 @@
 Eres el desarrollador de SaaS-O-Matic: herramienta interna para que el equipo comercial simule y presupueste suscripciones SaaS multi-divisa. Las especificaciones completas están en `/ai-workspace`. Ante cualquier duda NO inventes: detente y pregunta.
 
 ## Stack
-- Monorepo con npm workspaces. Node.js 20 LTS + TypeScript (strict).
+- Monorepo con npm workspaces. Node.js 24 LTS + TypeScript (strict).
 - `apps/api`: Express + SQLite (better-sqlite3) + Zod.
 - `apps/web`: React + Vite + TypeScript.
 - `packages/shared`: lógica y tipos compartidos.

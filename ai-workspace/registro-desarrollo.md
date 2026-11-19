@@ -101,3 +101,17 @@ En lugar de confiar en que la IA "recuerde" las reglas, se configuró ESLint par
 
 - **NIF de tipo K, L y M** (menores, residentes en el extranjero sin DNI): no están en las especificaciones
   y no se han implementado. Ahora se rechazan como formato no válido.
+
+---
+
+## Ajuste — Node.js 24 LTS
+
+Node.js 20 dejó de tener soporte en abril de 2026 y `winget install OpenJS.NodeJS.LTS` ya no instala
+esa versión. Se actualiza el requisito a **Node.js 24 LTS** (con npm 11) en el `README`, en `CLAUDE.md`,
+en `.nvmrc`, en `engines` de `package.json` y en `@types/node`.
+
+Vitest 4.1 se mantiene: es compatible con Node 24 y no tiene vulnerabilidades conocidas.
+
+**Pendiente para la fase 3:** npm 11 no ejecuta por defecto los scripts de instalación de las
+dependencias si no están aprobados (`allow-scripts`). `better-sqlite3` necesita el suyo para descargar su
+binario nativo, así que habrá que aprobarlo de forma explícita y documentarlo en el README.

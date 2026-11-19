@@ -8,7 +8,7 @@ Herramienta interna para simular, optimizar y presupuestar suscripciones SaaS mu
 
 ## Requisitos previos
 
-Se da por hecho que **Git** está instalado. Además se necesita **Node.js 20 LTS** (incluye npm).
+Se da por hecho que **Git** está instalado. Además se necesita **Node.js 24 LTS** (incluye npm 11).
 
 ### Instalar Node.js en Windows 10 / 11
 
@@ -25,7 +25,7 @@ node -v
 npm -v
 ```
 
-Debe mostrar `v20.x` o superior y `10.x` o superior.
+Debe mostrar `v24.x` o superior y `11.x` o superior.
 
 > Si `winget` no está disponible, descarga el instalador LTS desde https://nodejs.org y sigue el asistente con las opciones por defecto.
 
@@ -85,7 +85,7 @@ Arranca backend y frontend a la vez.
 
 - **Puerto ocupado:** cierra la aplicación que use el puerto 3000 o 5173, o cambia `PORT` en `apps/api/.env`.
 - **Sin internet:** la app funciona; el IVA usa los datos guardados y las divisas muestran un aviso y valores en EUR.
-- **Error al instalar `better-sqlite3`:** asegúrate de usar Node 20 LTS (`node -v`) y repite `npm install`.
+- **Error al instalar `better-sqlite3`:** asegúrate de usar Node 24 LTS (`node -v`) y repite `npm install`.
 
 ## Estructura
 
