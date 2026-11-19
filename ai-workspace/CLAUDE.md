@@ -53,11 +53,12 @@ Normalizar (mayúsculas, sin espacios ni guiones). Si país = ES: DNI (8 dígito
 - `POST /customers` {companyName, taxId, email, countryCode, planCode} → 201 | 400 | 409 (taxId duplicado) | 422 (país/plan/taxId no válido).
 - `POST /simulations` {customerId, activeUsers, storageGb, apiCalls} → 201 con {id, customerId, activeUsers, storageGb, apiCalls, baseCents, taxPercent, taxCents, totalCents, tierBreakdown, planWarnings[], createdAt} | 400 | 404.
 - `GET /customers?q=&page=&pageSize=` (parcial, case-insensitive en companyName y taxId; pageSize 20, máx 100) → {items,total,page,pageSize}.
-- `GET /customers/:id`, `GET /customers/:id/simulations` (recientes primero), `GET /tax-rates`, `GET /plans`, `GET /pricing-tiers`.
+- `GET /customers/:id`, `GET /customers/:id/simulations` (recientes primero), `GET /simulations/:id`, `GET /tax-rates`, `GET /plans`, `GET /pricing-tiers`.
+- `GET /dashboard` → {customersCount, simulationsCount, customersWithSimulationsCount, estimatedMonthlyCents (suma de la última simulación de cada cliente), averageMonthlyCents, customersByPlan[]}.
 - `planWarnings`: textos legibles si storageGb o apiCalls superan el plan. No bloquean.
 
 ## Frontend
-- Vistas: Buscador/Dashboard (debounce 300 ms, cards responsive), Detalle de cliente (card + historial), Simulador (slider 1–10.000 + storageGb + apiCalls, factura y desglose en tiempo real con la lógica de `packages/shared`), Alta de cliente (selectores de país y plan desde la API), selector de divisa en la cabecera.
+- Vistas: Buscador/Dashboard (resumen de indicadores + buscador con debounce 300 ms, cards responsive), Simulación guardada en solo lectura (misma pantalla del simulador, controles bloqueados y sin guardar; se abre desde el historial), Detalle de cliente (card + historial), Simulador (slider 1–10.000 + storageGb + apiCalls, factura y desglose en tiempo real con la lógica de `packages/shared`), Alta de cliente (selectores de país y plan desde la API), selector de divisa en la cabecera.
 - Divisas: `https://open.er-api.com/v6/latest/EUR` SOLO desde el frontend. Caché en localStorage 1 h. Divisas: EUR, USD, GBP + monedas locales de países admitidos. Carga: indicador sin bloquear. Error: últimos tipos guardados con su fecha; sin caché, EUR con aviso.
 - Timeouts (AbortController): 30 s API de divisas, 10 s nuestro backend. Al vencer: mensaje claro + botón reintentar.
 - Estados de carga, vacío y error en todas las vistas.

@@ -1,0 +1,275 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>SaaS-O-Matic — Diagrama de base de datos</title>
+<style>
+  @page { size: A4 landscape; margin: 12mm 14mm 10mm; }
+  * { box-sizing: border-box; }
+  body { font-family: system-ui, 'Segoe UI', Roboto, Arial, sans-serif; color: #0f172a; margin: 0; font-size: 11pt; }
+  h1 { font-size: 20pt; margin: 0 0 2mm; color: #1e1b4b; }
+  h2 { font-size: 12pt; margin: 4mm 0 1.5mm; color: #1e1b4b; }
+  .page + .page { font-size: 9.5pt; }
+  .sub { color: #475569; margin: 0 0 4mm; }
+  .page { page-break-after: always; }
+  .page:last-child { page-break-after: auto; }
+  svg { width: 100%; height: auto; }
+  .tname { font: 700 13px system-ui, sans-serif; fill: #fff; }
+  .tdesc { font: 10px system-ui, sans-serif; fill: #c7d2fe; }
+  .col { font: 12px ui-monospace, Consolas, monospace; fill: #0f172a; }
+  .col.bold { font-weight: 700; }
+  .type { font: 10.5px ui-monospace, Consolas, monospace; fill: #6366f1; }
+  .note { font: 10px system-ui, sans-serif; fill: #475569; }
+  .badge { font: 700 8.5px system-ui, sans-serif; fill: #fff; }
+  .rel { fill: none; stroke: #334155; stroke-width: 1.6; }
+  .rel.dashed { stroke: #94a3b8; stroke-dasharray: 5 4; }
+  .rlabel { font: 600 11px system-ui, sans-serif; fill: #334155; }
+  .legend { display: flex; flex-wrap: wrap; gap: 3mm 8mm; font-size: 9.5pt; color: #334155; margin-top: 2mm; }
+  .legend span b { display: inline-block; padding: 0 4px; border-radius: 3px; color: #fff; font-size: 8pt; margin-right: 4px; }
+  table { border-collapse: collapse; width: 100%; font-size: 9pt; }
+  th, td { border-bottom: 1px solid #e2e8f0; padding: 1.2mm 2mm; text-align: left; vertical-align: top; }
+  th { background: #eef2ff; color: #3730a3; }
+  code { font-family: ui-monospace, Consolas, monospace; font-size: 9pt; background: #f1f5f9; padding: 0 3px; border-radius: 3px; }
+  .cols { display: grid; grid-template-columns: 1fr 1fr; gap: 0 8mm; }
+  ul { margin: 0; padding-left: 5mm; }
+  li { margin-bottom: 0.8mm; }
+  .foot { margin-top: 4mm; color: #64748b; font-size: 8.5pt; }
+</style>
+</head>
+<body>
+<section class="page">
+  <h1>SaaS-O-Matic — Diagrama de base de datos</h1>
+  <p class="sub">SQLite · esquema de la migración 1 (<code>apps/api/src/db/schema.ts</code>) · nombres en snake_case, iguales en camelCase en la API</p>
+  <svg viewBox="0 0 1140 640" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Diagrama entidad-relación de SaaS-O-Matic">
+<defs>
+  <marker id="one" viewBox="0 0 16 16" refX="1" refY="8" markerWidth="16" markerHeight="16" orient="auto">
+    <path d="M6 2 V14 M10 2 V14" stroke="#334155" stroke-width="1.6"/></marker>
+  <marker id="many" viewBox="0 0 16 16" refX="15" refY="8" markerWidth="16" markerHeight="16" orient="auto">
+    <path d="M15 2 L5 8 L15 14 M15 8 H3 M4 2 V14" stroke="#334155" stroke-width="1.6" fill="none"/></marker>
+  <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="9" markerHeight="9" orient="auto">
+    <path d="M0 0 L10 5 L0 10 z" fill="#94a3b8"/></marker>
+</defs>
+<path d="M340 115.5 H380.0 V347.5 H420" class="rel" marker-start="url(#one)" marker-end="url(#many)"/><text x="386.0" y="231.5" class="rlabel">1 : N</text>
+<path d="M340 465.5 H380.0 V370.5 H420" class="rel" marker-start="url(#one)" marker-end="url(#many)"/><text x="386.0" y="418.0" class="rlabel">1 : N</text>
+<path d="M720 255.5 H760.0 V138.5 H800" class="rel" marker-start="url(#one)" marker-end="url(#many)"/><text x="766.0" y="197.0" class="rlabel">1 : N</text>
+<path d="M950.0 470 V361" class="rel dashed" marker-end="url(#arrow)"/>
+<text x="958.0" y="417.5" class="rlabel">se copia en tier_breakdown</text>
+<g class="table">
+<rect x="40" y="70" width="300" height="195" rx="8" fill="#fff" stroke="#c7d2fe" stroke-width="1.5"/>
+<path d="M40 78 a8 8 0 0 1 8 -8 h284 a8 8 0 0 1 8 8 v26 h-300 z" fill="#1e1b4b"/>
+<text x="52" y="92" class="tname">tax_rates</text>
+<text x="328" y="92" class="tdesc" text-anchor="end">IVA por país</text>
+<rect x="48" y="109" width="24" height="13" rx="3" fill="#4f46e5"/>
+<text x="60" y="119" class="badge" text-anchor="middle">PK</text>
+<text x="78" y="120" class="col bold">country_code</text>
+<text x="190" y="120" class="type">TEXT</text>
+<text x="330" y="120" class="note" text-anchor="end">ISO 3166, 2 letras</text>
+<rect x="41" y="127" width="298" height="23" fill="#f8fafc"/>
+<text x="78" y="143" class="col">country_name</text>
+<text x="190" y="143" class="type">TEXT</text>
+<text x="330" y="143" class="note" text-anchor="end">NOT NULL</text>
+<text x="78" y="166" class="col">rate_type</text>
+<text x="190" y="166" class="type">TEXT</text>
+<text x="330" y="166" class="note" text-anchor="end">NOT NULL</text>
+<rect x="41" y="173" width="298" height="23" fill="#f8fafc"/>
+<text x="78" y="189" class="col">rate_percent</text>
+<text x="190" y="189" class="type">REAL</text>
+<text x="330" y="189" class="note" text-anchor="end">0 – 100</text>
+<text x="78" y="212" class="col">currency</text>
+<text x="190" y="212" class="type">TEXT</text>
+<text x="330" y="212" class="note" text-anchor="end">3 letras</text>
+<rect x="41" y="219" width="298" height="23" fill="#f8fafc"/>
+<text x="78" y="235" class="col">source</text>
+<text x="190" y="235" class="type">TEXT</text>
+<text x="330" y="235" class="note" text-anchor="end">&#x27;api&#x27; | &#x27;manual&#x27;</text>
+<text x="78" y="258" class="col">updated_at</text>
+<text x="190" y="258" class="type">TEXT</text>
+<text x="330" y="258" class="note" text-anchor="end">ISO 8601</text>
+</g>
+<g class="table">
+<rect x="40" y="420" width="300" height="126" rx="8" fill="#fff" stroke="#c7d2fe" stroke-width="1.5"/>
+<path d="M40 428 a8 8 0 0 1 8 -8 h284 a8 8 0 0 1 8 8 v26 h-300 z" fill="#1e1b4b"/>
+<text x="52" y="442" class="tname">plans</text>
+<text x="328" y="442" class="tdesc" text-anchor="end">Planes y límites incluidos</text>
+<rect x="48" y="459" width="24" height="13" rx="3" fill="#4f46e5"/>
+<text x="60" y="469" class="badge" text-anchor="middle">PK</text>
+<text x="78" y="470" class="col bold">code</text>
+<text x="190" y="470" class="type">TEXT</text>
+<text x="330" y="470" class="note" text-anchor="end"></text>
+<rect x="41" y="477" width="298" height="23" fill="#f8fafc"/>
+<text x="78" y="493" class="col">name</text>
+<text x="190" y="493" class="type">TEXT</text>
+<text x="330" y="493" class="note" text-anchor="end">NOT NULL</text>
+<text x="78" y="516" class="col">storage_gb</text>
+<text x="190" y="516" class="type">INTEGER</text>
+<text x="330" y="516" class="note" text-anchor="end">≥ 0</text>
+<rect x="41" y="523" width="298" height="23" fill="#f8fafc"/>
+<text x="78" y="539" class="col">api_calls</text>
+<text x="190" y="539" class="type">INTEGER</text>
+<text x="330" y="539" class="note" text-anchor="end">≥ 0</text>
+</g>
+<g class="table">
+<rect x="420" y="210" width="300" height="195" rx="8" fill="#fff" stroke="#c7d2fe" stroke-width="1.5"/>
+<path d="M420 218 a8 8 0 0 1 8 -8 h284 a8 8 0 0 1 8 8 v26 h-300 z" fill="#1e1b4b"/>
+<text x="432" y="232" class="tname">customers</text>
+<text x="708" y="232" class="tdesc" text-anchor="end">Clientes corporativos</text>
+<rect x="428" y="249" width="24" height="13" rx="3" fill="#4f46e5"/>
+<text x="440" y="259" class="badge" text-anchor="middle">PK</text>
+<text x="458" y="260" class="col bold">id</text>
+<text x="570" y="260" class="type">INTEGER</text>
+<text x="710" y="260" class="note" text-anchor="end">autoincremental</text>
+<rect x="421" y="267" width="298" height="23" fill="#f8fafc"/>
+<text x="458" y="283" class="col">company_name</text>
+<text x="570" y="283" class="type">TEXT</text>
+<text x="710" y="283" class="note" text-anchor="end">índice</text>
+<rect x="428" y="295" width="24" height="13" rx="3" fill="#b45309"/>
+<text x="440" y="305" class="badge" text-anchor="middle">UQ</text>
+<text x="458" y="306" class="col">tax_id</text>
+<text x="570" y="306" class="type">TEXT</text>
+<text x="710" y="306" class="note" text-anchor="end">normalizado</text>
+<rect x="421" y="313" width="298" height="23" fill="#f8fafc"/>
+<text x="458" y="329" class="col">email</text>
+<text x="570" y="329" class="type">TEXT</text>
+<text x="710" y="329" class="note" text-anchor="end">NOT NULL</text>
+<rect x="428" y="341" width="24" height="13" rx="3" fill="#0f766e"/>
+<text x="440" y="351" class="badge" text-anchor="middle">FK</text>
+<text x="458" y="352" class="col">country_code</text>
+<text x="570" y="352" class="type">TEXT</text>
+<text x="710" y="352" class="note" text-anchor="end">→ tax_rates</text>
+<rect x="421" y="359" width="298" height="23" fill="#f8fafc"/>
+<rect x="428" y="364" width="24" height="13" rx="3" fill="#0f766e"/>
+<text x="440" y="374" class="badge" text-anchor="middle">FK</text>
+<text x="458" y="375" class="col">plan_code</text>
+<text x="570" y="375" class="type">TEXT</text>
+<text x="710" y="375" class="note" text-anchor="end">→ plans</text>
+<text x="458" y="398" class="col">created_at</text>
+<text x="570" y="398" class="type">TEXT</text>
+<text x="710" y="398" class="note" text-anchor="end">ISO 8601</text>
+</g>
+<g class="table">
+<rect x="800" y="70" width="300" height="287" rx="8" fill="#fff" stroke="#c7d2fe" stroke-width="1.5"/>
+<path d="M800 78 a8 8 0 0 1 8 -8 h284 a8 8 0 0 1 8 8 v26 h-300 z" fill="#1e1b4b"/>
+<text x="812" y="92" class="tname">simulations</text>
+<text x="1088" y="92" class="tdesc" text-anchor="end">Foto inmutable del cálculo</text>
+<rect x="808" y="109" width="24" height="13" rx="3" fill="#4f46e5"/>
+<text x="820" y="119" class="badge" text-anchor="middle">PK</text>
+<text x="838" y="120" class="col bold">id</text>
+<text x="950" y="120" class="type">INTEGER</text>
+<text x="1090" y="120" class="note" text-anchor="end">autoincremental</text>
+<rect x="801" y="127" width="298" height="23" fill="#f8fafc"/>
+<rect x="808" y="132" width="24" height="13" rx="3" fill="#0f766e"/>
+<text x="820" y="142" class="badge" text-anchor="middle">FK</text>
+<text x="838" y="143" class="col">customer_id</text>
+<text x="950" y="143" class="type">INTEGER</text>
+<text x="1090" y="143" class="note" text-anchor="end">→ customers</text>
+<text x="838" y="166" class="col">active_users</text>
+<text x="950" y="166" class="type">INTEGER</text>
+<text x="1090" y="166" class="note" text-anchor="end">1 – 10.000</text>
+<rect x="801" y="173" width="298" height="23" fill="#f8fafc"/>
+<text x="838" y="189" class="col">storage_gb</text>
+<text x="950" y="189" class="type">INTEGER</text>
+<text x="1090" y="189" class="note" text-anchor="end">≥ 0</text>
+<text x="838" y="212" class="col">api_calls</text>
+<text x="950" y="212" class="type">INTEGER</text>
+<text x="1090" y="212" class="note" text-anchor="end">≥ 0</text>
+<rect x="801" y="219" width="298" height="23" fill="#f8fafc"/>
+<text x="838" y="235" class="col">base_cents</text>
+<text x="950" y="235" class="type">INTEGER</text>
+<text x="1090" y="235" class="note" text-anchor="end">≥ 0</text>
+<text x="838" y="258" class="col">tax_percent</text>
+<text x="950" y="258" class="type">REAL</text>
+<text x="1090" y="258" class="note" text-anchor="end">copia del IVA</text>
+<rect x="801" y="265" width="298" height="23" fill="#f8fafc"/>
+<text x="838" y="281" class="col">tax_cents</text>
+<text x="950" y="281" class="type">INTEGER</text>
+<text x="1090" y="281" class="note" text-anchor="end">≥ 0</text>
+<text x="838" y="304" class="col">total_cents</text>
+<text x="950" y="304" class="type">INTEGER</text>
+<text x="1090" y="304" class="note" text-anchor="end">= base + IVA</text>
+<rect x="801" y="311" width="298" height="23" fill="#f8fafc"/>
+<text x="838" y="327" class="col">tier_breakdown</text>
+<text x="950" y="327" class="type">TEXT</text>
+<text x="1090" y="327" class="note" text-anchor="end">JSON (copia)</text>
+<text x="838" y="350" class="col">created_at</text>
+<text x="950" y="350" class="type">TEXT</text>
+<text x="1090" y="350" class="note" text-anchor="end">ISO 8601</text>
+</g>
+<g class="table">
+<rect x="800" y="470" width="300" height="126" rx="8" fill="#fff" stroke="#c7d2fe" stroke-width="1.5"/>
+<path d="M800 478 a8 8 0 0 1 8 -8 h284 a8 8 0 0 1 8 8 v26 h-300 z" fill="#1e1b4b"/>
+<text x="812" y="492" class="tname">pricing_tiers</text>
+<text x="1088" y="492" class="tdesc" text-anchor="end">Tramos de precio parametrizables</text>
+<rect x="808" y="509" width="24" height="13" rx="3" fill="#4f46e5"/>
+<text x="820" y="519" class="badge" text-anchor="middle">PK</text>
+<text x="838" y="520" class="col bold">id</text>
+<text x="950" y="520" class="type">INTEGER</text>
+<text x="1090" y="520" class="note" text-anchor="end">autoincremental</text>
+<rect x="801" y="527" width="298" height="23" fill="#f8fafc"/>
+<text x="838" y="543" class="col">min_users</text>
+<text x="950" y="543" class="type">INTEGER</text>
+<text x="1090" y="543" class="note" text-anchor="end">≥ 1</text>
+<text x="838" y="566" class="col">max_users</text>
+<text x="950" y="566" class="type">INTEGER</text>
+<text x="1090" y="566" class="note" text-anchor="end">NULL = sin tope</text>
+<rect x="801" y="573" width="298" height="23" fill="#f8fafc"/>
+<text x="838" y="589" class="col">unit_cents</text>
+<text x="950" y="589" class="type">INTEGER</text>
+<text x="1090" y="589" class="note" text-anchor="end">&gt; 0</text>
+</g>
+</svg>
+  <div class="legend">
+    <span><b style="background:#4f46e5">PK</b>clave primaria</span>
+    <span><b style="background:#0f766e">FK</b>clave foránea</span>
+    <span><b style="background:#b45309">UQ</b>valor único</span>
+    <span><svg width="58" height="14" viewBox="0 0 58 14" style="width:58px;vertical-align:middle"><path d="M2 7 H56 M7 2 V12 M11 2 V12 M56 2 L46 7 L56 12 M45 2 V12" stroke="#334155" stroke-width="1.5" fill="none"/></svg> relación 1 : N (uno a muchos)</span>
+    <span><svg width="40" height="14" viewBox="0 0 40 14" style="width:40px;vertical-align:middle"><path d="M2 7 H32" stroke="#94a3b8" stroke-width="1.5" stroke-dasharray="5 4"/><path d="M30 2 L39 7 L30 12 z" fill="#94a3b8"/></svg> copia de valores al calcular (no es clave foránea)</span>
+  </div>
+</section>
+
+<section class="page">
+  <h1>Relaciones y reglas del modelo</h1>
+  <h2>Relaciones</h2>
+  <table>
+    <thead><tr><th>Origen (1)</th><th>Destino (N)</th><th>Columna</th><th>Significado</th><th>Al borrar</th></tr></thead>
+    <tbody>
+      <tr><td><code>tax_rates</code></td><td><code>customers</code></td><td><code>country_code</code></td><td>Cada cliente pertenece a un país con IVA conocido. Solo se admiten países de esta tabla (UE, Reino Unido y EE. UU.).</td><td>Restringido</td></tr>
+      <tr><td><code>plans</code></td><td><code>customers</code></td><td><code>plan_code</code></td><td>Cada cliente tiene un plan con almacenamiento y llamadas a la API incluidos.</td><td>Restringido</td></tr>
+      <tr><td><code>customers</code></td><td><code>simulations</code></td><td><code>customer_id</code></td><td>Historial de simulaciones de cada cliente, de la más reciente a la más antigua.</td><td>En cascada</td></tr>
+      <tr><td><code>pricing_tiers</code></td><td><code>simulations</code></td><td><em>(copia)</em></td><td>Los tramos vigentes se copian en <code>tier_breakdown</code> (JSON) al calcular. Sin clave foránea, a propósito.</td><td>—</td></tr>
+      <tr><td><code>tax_rates</code></td><td><code>simulations</code></td><td><em>(copia)</em></td><td>El IVA vigente del país se copia en <code>tax_percent</code> al calcular.</td><td>—</td></tr>
+    </tbody>
+  </table>
+
+  <div class="cols">
+    <div>
+      <h2>Reglas de integridad en la propia base de datos</h2>
+      <ul>
+        <li>Claves foráneas activadas (<code>PRAGMA foreign_keys = ON</code>).</li>
+        <li><code>customers.tax_id</code> único y guardado normalizado (mayúsculas, sin espacios ni guiones).</li>
+        <li><code>simulations.total_cents = base_cents + tax_cents</code> (CHECK).</li>
+        <li><code>active_users</code> entre 1 y 10.000; almacenamiento y llamadas ≥ 0.</li>
+        <li>IVA entre 0 y 100 %; <code>country_code</code> de 2 letras y <code>currency</code> de 3.</li>
+        <li><code>tier_breakdown</code> debe ser JSON válido (<code>json_valid</code>).</li>
+        <li>Tramos: <code>min_users ≥ 1</code>, <code>max_users ≥ min_users</code> o NULL, precio &gt; 0. Al arrancar se valida además que son contiguos, sin solapes y con un único tramo final sin tope.</li>
+      </ul>
+      <h2>Índices</h2>
+      <ul>
+        <li><code>idx_simulations_customer (customer_id, created_at DESC)</code>: historial por cliente.</li>
+        <li><code>idx_customers_company_name (company_name)</code>: orden por nombre. Únicos implícitos: claves primarias y <code>customers.tax_id</code>.</li>
+      </ul>
+    </div>
+    <div>
+      <h2>Decisiones de diseño</h2>
+      <ul>
+        <li><strong>Importes en céntimos enteros</strong> (<code>*_cents</code>): sin errores de coma flotante. Todo se guarda en euros; la conversión de divisa es solo de visualización.</li>
+        <li><strong>Simulaciones inmutables</strong>: cada una guarda una foto completa del cálculo (base, IVA aplicado, total y desglose por tramos). Si mañana cambian los tramos o el IVA, el historial no cambia.</li>
+        <li><strong>Tramos, planes e IVA como datos</strong>: se pueden cambiar sin desplegar código. El IVA de la UE se sincroniza con VATcomply cada 24 h; Reino Unido y EE. UU. se cargan a mano (<code>source = 'manual'</code>).</li>
+        <li><strong>Nomenclatura única</strong>: misma palabra en BD (snake_case), API y frontend (camelCase). El mapeo vive solo en los repositorios.</li>
+        <li><strong>Migraciones versionadas</strong> con <code>PRAGMA user_version</code> y datos iniciales idempotentes.</li>
+      </ul>
+    </div>
+  </div>
+  <p class="foot">Generado a partir del esquema real del repositorio. Fuente editable: <code>ai-workspace/fuentes/diagrama-base-de-datos.html</code>.</p>
+</section>
+</body>
+</html>

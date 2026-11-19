@@ -358,3 +358,33 @@ Se repasaron uno a uno los requisitos del enunciado sobre la versión con el red
 datos nueva y servicios externos reales. Todo cumple; se corrigieron tres defectos (subtotal oculto en móvil,
 error de favicon en consola y un script de verificación desactualizado). Detalle y tabla de trazabilidad en
 [`verificacion-final.md`](./verificacion-final.md#revisión-contra-el-documento-original-del-reto-19112026-tras-el-rediseño-visual).
+
+---
+
+## Ampliación — Dashboard, simulación guardada en solo lectura y diagrama de base de datos
+
+**Peticiones:** (1) PDF con el diagrama de base de datos y sus relaciones; (2) un resumen tipo dashboard;
+(3) al pulsar una simulación del historial, abrirla en la pantalla del simulador **sin poder editarla**:
+sin botón de guardar y con todos los controles bloqueados; (4) URL real del repositorio en el README.
+
+| Pieza | Implementación |
+|---|---|
+| `GET /dashboard` | Repositorio con SQL de agregados → servicio (media por cliente) → controlador. **Decisión:** la facturación mensual estimada suma la **última** simulación de cada cliente (su presupuesto vigente); sumar todas contaría varias veces al mismo cliente. |
+| `GET /simulations/:id` | Devuelve la foto guardada; 404 `SIMULATION_NOT_FOUND`. |
+| Resumen en el buscador | Clientes, simulaciones, facturación estimada y media por cliente (en la divisa elegida) y clientes por plan. Su propio estado de carga y error: si falla, el buscador sigue funcionando. |
+| Simulación guardada | Ruta `/customers/:id/simulations/:simulationId`. Reutiliza los componentes del simulador con `<fieldset disabled>`, que bloquea todos los controles. Muestra los **importes guardados**, no recalculados, aunque hayan cambiado los tramos. Solo queda «Volver al cliente». Comprueba que la simulación es de ese cliente. |
+| Historial | Cada tarjeta entera abre su simulación (enlace estirado, mismo patrón que las tarjetas de cliente). |
+| Diagrama | `diagrama-base-de-datos.pdf` (fuente editable en `fuentes/`). Columnas comprobadas automáticamente contra la base de datos real: las 5 tablas coinciden. |
+
+**Correcciones durante la revisión:**
+1. El servicio del dashboard traducía las filas de snake_case a camelCase, y el mapeo debe vivir solo en los
+   repositorios (regla 4 de `CLAUDE.md`). Se movió al repositorio.
+2. Una nota dentro de una lista de definiciones (`<p>` dentro de `<dl>`) no era HTML válido. Se movió dentro del `<dd>`.
+3. En el navegador, los campos bloqueados **parecían editables** (solo el slider se veía gris). Se añadió un
+   estilo de control deshabilitado (fondo gris, borde discontinuo, cursor de prohibido) que sigue siendo legible.
+4. Primera versión del PDF: textos superpuestos, leyenda con símbolos mal dibujados y una tercera página casi
+   vacía. Corregido y revisado página a página.
+
+**Verificación:** 255 tests (5 de API y 11 de frontend nuevos) · navegador real: 6 vistas × 3 anchos sin
+violaciones de axe, sin desbordes y sin errores en consola · clic real en la tarjeta del historial → solo
+lectura con los 4 controles bloqueados y el slider inmóvil con el teclado · lint y typecheck sin errores.

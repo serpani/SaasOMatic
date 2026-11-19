@@ -11,6 +11,7 @@ const pages = [
   ['buscador', '/'],
   ['detalle', '/customers/1'],
   ['simulador', '/customers/1/simulate'],
+  ['simulacion-guardada', '/customers/1/simulations/2'],
   ['alta', '/customers/new'],
   ['no-encontrada', '/nada'],
 ];
