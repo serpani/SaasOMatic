@@ -5,7 +5,7 @@ import {
   type CreateSimulationInput,
   type Simulation,
 } from '@saasomatic/shared';
-import { AppError } from '../errors/AppError';
+import { AppError, notFound } from '../errors/AppError';
 import type { CatalogRepository } from '../repositories/catalog.repository';
 import type { SimulationsRepository } from '../repositories/simulations.repository';
 import type { TaxRatesRepository } from '../repositories/taxRates.repository';
@@ -34,6 +34,12 @@ export function createSimulationsService(
       const quote = calculateQuote(input.activeUsers, catalog.findAllPricingTiers(), taxRate.ratePercent);
       const saved = simulations.insert({ ...input, ...quote, createdAt: now().toISOString() });
       return { ...saved, planWarnings: getPlanWarnings(input, plan) };
+    },
+
+    getById(id: number): Simulation {
+      const simulation = simulations.findById(id);
+      if (!simulation) throw notFound('SIMULATION_NOT_FOUND', 'No existe la simulación indicada.');
+      return simulation;
     },
 
     listByCustomer(customerId: number): Simulation[] {

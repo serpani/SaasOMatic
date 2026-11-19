@@ -2,6 +2,7 @@ import { Router } from 'express';
 import type { Container } from '../container';
 import { createCatalogController } from '../controllers/catalog.controller';
 import { createCustomersController } from '../controllers/customers.controller';
+import { createDashboardController } from '../controllers/dashboard.controller';
 import { getHealth } from '../controllers/health.controller';
 import { createSimulationsController } from '../controllers/simulations.controller';
 
@@ -10,6 +11,7 @@ export function createRouter(container: Container): Router {
   const catalog = createCatalogController(container.catalogService);
   const customers = createCustomersController(container.customersService, container.simulationsService);
   const simulations = createSimulationsController(container.simulationsService);
+  const dashboard = createDashboardController(container.dashboardService);
 
   const router = Router();
   router.get('/health', getHealth);
@@ -24,5 +26,8 @@ export function createRouter(container: Container): Router {
   router.get('/customers/:id/simulations', customers.listSimulations);
 
   router.post('/simulations', simulations.create);
+  router.get('/simulations/:id', simulations.getById);
+
+  router.get('/dashboard', dashboard.getSummary);
   return router;
 }

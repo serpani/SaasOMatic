@@ -70,3 +70,23 @@ export interface ApiErrorBody {
     details?: unknown;
   };
 }
+
+/** Clientes por plan para el resumen del dashboard. */
+export interface PlanCustomers {
+  planCode: string;
+  planName: string;
+  customers: number;
+}
+
+/**
+ * Resumen del dashboard. La facturación estimada suma el total de la **última** simulación de cada
+ * cliente (su presupuesto vigente), para no contar varias veces al mismo cliente. Importes en céntimos de euro.
+ */
+export interface DashboardSummary {
+  customersCount: number;
+  simulationsCount: number;
+  customersWithSimulationsCount: number;
+  estimatedMonthlyCents: number;
+  averageMonthlyCents: number;
+  customersByPlan: PlanCustomers[];
+}

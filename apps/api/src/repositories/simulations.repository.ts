@@ -68,6 +68,10 @@ export function createSimulationsRepository(db: Db) {
       if (!row) throw new Error('No se pudo leer la simulación recién guardada.');
       return toSimulation(row);
     },
+    findById: (id: number): Simulation | undefined => {
+      const row = byId.get(id);
+      return row ? toSimulation(row) : undefined;
+    },
     findByCustomer: (customerId: number): Simulation[] => byCustomer.all(customerId).map(toSimulation),
   };
 }
