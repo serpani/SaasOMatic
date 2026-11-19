@@ -99,8 +99,7 @@ En lugar de confiar en que la IA "recuerde" las reglas, se configuró ESLint par
 
 ### Puntos abiertos para revisar
 
-- **NIF de tipo K, L y M** (menores, residentes en el extranjero sin DNI): no están en las especificaciones
-  y no se han implementado. Ahora se rechazan como formato no válido.
+- ~~**NIF de tipo K, L y M**: no implementados.~~ → Resuelto tras la revisión (ver *Ajuste — Todos los tipos de NIF*).
 
 ---
 
@@ -115,3 +114,40 @@ Vitest 4.1 se mantiene: es compatible con Node 24 y no tiene vulnerabilidades co
 **Pendiente para la fase 3:** npm 11 no ejecuta por defecto los scripts de instalación de las
 dependencias si no están aprobados (`allow-scripts`). `better-sqlite3` necesita el suyo para descargar su
 binario nativo, así que habrá que aprobarlo de forma explícita y documentarlo en el README.
+
+---
+
+## Ajuste — Todos los tipos de NIF y avisos del plan en `packages/shared`
+
+### Revisión: la IA se quedó corta con los NIF
+
+Al cerrar la fase 2 la IA propuso dejar sin soporte los NIF K, L y M por no estar en `CLAUDE.md`.
+**Se rechazó la propuesta:** el RN pide validar el DNI/NIF/CIF con el algoritmo oficial, y un NIF de una
+persona menor de 14 años (K), un español residente en el extranjero sin DNI (L) o un extranjero sin NIE (M)
+es tan válido como un DNI. Se exigió soportar todos los tipos de NIF.
+
+| Tipo | Formato | Control |
+|---|---|---|
+| DNI | 8 dígitos + letra | `TRWAGMYFPDXBNJZSQVHLCKE`[número mod 23] |
+| NIE | X/Y/Z + 7 dígitos + letra | Igual que el DNI, con X/Y/Z → 0/1/2 |
+| **NIF K, L, M** | K/L/M + 7 dígitos + letra | **Igual que el DNI, sobre los 7 dígitos** |
+| CIF | Letra de organización + 7 dígitos + control | Luhn; letra `JABCDEFGHI` o dígito según la organización |
+
+**Cómo se verificó el algoritmo** en lugar de fiarse de la memoria del modelo:
+1. Se leyó el código fuente de python-stdnum (`stdnum/es/nif.py`), que confirma que K/L/M usan el algoritmo
+   del DNI sobre los 7 dígitos centrales.
+2. Se hizo una prueba cruzada con 4.000 identificadores aleatorios contra un oráculo independiente
+   (ver `verificaciones/`): **0 diferencias inesperadas**. Las únicas diferencias son los CIF en los que
+   aplicamos la regla estricta de la AEAT y python-stdnum es permisivo; es una decisión intencionada.
+
+### Avisos del plan compartidos
+
+`getPlanWarnings` vive en `packages/shared/src/plans` (se añade `plans` a la estructura de `CLAUDE.md`).
+La API la usará para devolver `planWarnings` y el simulador para mostrar los mismos avisos en tiempo real
+mientras se mueve el slider, sin duplicar la lógica. Avisa solo si el uso **supera** el plan (en el límite
+exacto no hay aviso) y formatea los números con separador de miles español igual en Node y navegador.
+
+### Verificación
+
+- 105 tests en verde (nuevos: NIF K/L/M válidos, inválidos, formato y normalización; avisos del plan).
+- `npm run lint` ✔ · `npm run typecheck` ✔.
