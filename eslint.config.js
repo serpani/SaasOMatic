@@ -25,6 +25,12 @@ export default tseslint.config(
     languageOptions: { globals: globals.node },
   },
   {
+    // Scripts de verificación en Node (CommonJS + Playwright, con código que se ejecuta en el navegador).
+    files: ['**/*.cjs'],
+    languageOptions: { sourceType: 'commonjs', globals: { ...globals.node, ...globals.browser } },
+    rules: { '@typescript-eslint/no-require-imports': 'off' },
+  },
+  {
     files: ['apps/web/**/*.{ts,tsx}'],
     languageOptions: { globals: globals.browser },
     plugins: { 'react-hooks': reactHooks },
