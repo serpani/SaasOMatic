@@ -55,7 +55,9 @@ Instala de una vez las dependencias de backend, frontend y paquete compartido.
 npm run db:setup
 ```
 
-Crea el fichero SQLite, las tablas y los datos iniciales (planes, tramos de precio e IVA). No requiere instalar ningún servidor de base de datos.
+Crea el fichero SQLite, las tablas y los datos iniciales (planes, tramos de precio e IVA). No requiere instalar ningún servidor de base de datos. Además descarga el IVA vigente de la UE desde VATcomply; si no hay conexión, se usan los tipos incluidos en el seed.
+
+La configuración (puerto, ruta de la base de datos…) tiene valores por defecto. Para cambiarla, copia `apps/api/.env.example` como `apps/api/.env` y edítalo.
 
 ### 4. Arrancar la aplicación
 
@@ -86,6 +88,8 @@ Arranca backend y frontend a la vez.
 - **Puerto ocupado:** cierra la aplicación que use el puerto 3000 o 5173, o cambia `PORT` en `apps/api/.env`.
 - **Sin internet:** la app funciona; el IVA usa los datos guardados y las divisas muestran un aviso y valores en EUR.
 - **Error al instalar `better-sqlite3`:** asegúrate de usar Node 24 LTS (`node -v`) y repite `npm install`.
+- **Aviso `install-scripts` de npm 11:** `better-sqlite3` necesita su script de instalación para descargar el binario de SQLite. Ya está aprobado en `allowScripts` del `package.json`; si npm lo bloquea, ejecuta `npm install-scripts approve better-sqlite3` y repite `npm install`.
+- **Red con proxy corporativo:** la sincronización del IVA usa `fetch` de Node, que no lee el proxy del sistema por defecto. Define `NODE_USE_ENV_PROXY=1` junto a `HTTPS_PROXY` antes de `npm run dev`. Sin acceso, la API arranca igual con el IVA guardado.
 
 ## Estructura
 

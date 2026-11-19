@@ -151,3 +151,67 @@ exacto no hay aviso) y formatea los números con separador de miles español igu
 
 - 105 tests en verde (nuevos: NIF K/L/M válidos, inválidos, formato y normalización; avisos del plan).
 - `npm run lint` ✔ · `npm run typecheck` ✔.
+
+---
+
+## Fase 3 — API: BD, migraciones, seeds, sincronización de IVA, endpoints, errores y tests
+
+**Instrucción:** implementar el backend según *Modelo de datos*, *IVA* y *API* de `CLAUDE.md`, con los casos
+A.4 del plan de pruebas.
+
+### Arquitectura en capas
+
+```
+routes/index.ts          URL → controlador (tabla de rutas, nada más)
+controllers/*            valida la forma con Zod → llama al servicio → responde (sin lógica)
+services/*               reglas de negocio: país admitido, plan, NIF, duplicados, cálculo, avisos, sync IVA
+repositories/*           SQL y mapeo snake_case ↔ camelCase (único sitio donde ocurre)
+db/*                     conexión, migraciones versionadas, seed idempotente, bootstrap y script de setup
+errors/*                 AppError + manejador único → { error: { code, message, details? } }
+container.ts             cableado de dependencias (repositorios → servicios); los tests lo reutilizan
+```
+
+### Decisiones técnicas
+
+| Tema | Decisión | Motivo |
+|---|---|---|
+| Códigos de error | 400 forma (Zod) → 422 negocio (país, plan, NIF) → 409 duplicado → 404 | Coincide con el contrato de `CLAUDE.md` y permite al frontend reaccionar por `code`. |
+| `details` | Lista `[{ field, message }]` en 400 y 422 | El frontend asocia cada error a su campo (`aria-describedby`, requisito de accesibilidad). |
+| Mensajes de Zod | Mensaje propio en español por campo + `z.locales.es()` de respaldo | Ningún mensaje técnico o en inglés llega al comercial. |
+| Duplicados | Comprobación previa + `UNIQUE` en BD capturado como 409 | Cubre la carrera de dos altas simultáneas con el mismo NIF. |
+| Búsqueda | Función SQL `search_normalize` (minúsculas y sin tildes) y escape de `%` y `_` | `LIKE` de SQLite solo ignora mayúsculas en ASCII: "facil" no encontraba "Fácil". |
+| Integridad en BD | `CHECK` (rangos, `total = base + IVA`, JSON válido) y claves foráneas activas | Última barrera aunque falle una capa superior. |
+| Migraciones | Lista versionada con `PRAGMA user_version`, en transacción | Sin dependencias extra; idempotente. |
+| Seed | `INSERT OR IGNORE`, tramos solo si la tabla está vacía | Se ejecuta en cada arranque sin pisar el IVA sincronizado ni tramos modificados. |
+| Sync IVA | Zod sobre la respuesta, `EL → GR`, solo los 27 de la UE, timeout 10 s, escritura en transacción | Un dato raro de VATcomply no corrompe la BD; si falla, aviso en log y se sigue con la BD. |
+| Tramos | `assertPricingTiersAreValid()` al arrancar; la API no arranca si son incoherentes | Requisito de `CLAUDE.md`. |
+
+### Problemas encontrados y cómo se resolvieron
+
+1. **El entorno de desarrollo bloqueaba VATcomply** (`403` del proxy). En lugar de suponer el formato de
+   la respuesta, se pidió permiso para abrir `api.vatcomply.com` y `open.er-api.com` y se inspeccionó la
+   respuesta real: array de 27 países, Grecia como `EL`, y la divisa incluida.
+2. **`fetch` de Node ignora el proxy del sistema.** La primera sincronización falló con `fetch failed`;
+   con `NODE_USE_ENV_PROXY=1` funcionó (27 países actualizados). Se documenta en el README para redes
+   corporativas.
+3. **npm 11 y los scripts de instalación.** npm 11 avisa de que `better-sqlite3` tiene un script no
+   aprobado (en el futuro lo bloqueará). Se probó en un directorio aislado y se añadió
+   `allowScripts` al `package.json` sin fijar versión, para que no se rompa al actualizar.
+4. **Revisión de los tests generados.** Se detectaron dos defectos en los propios tests: un mock de logger
+   compartido entre casos sin limpiar (una aserción podía pasar por una llamada anterior) y un test cuyo
+   nombre prometía comprobar la transacción cuando en realidad comprobaba la validación. Ambos corregidos.
+5. **Cast innecesario** (`as CustomerRow[]`) en la búsqueda: sustituido por sentencias preparadas tipadas.
+
+### Prueba manual con el servidor real
+
+Alta con NIF `b-1234567 4` → guardado como `B12345674`; repetido → 409; Japón → 422; NIF con letra mala →
+422; campos vacíos → 400 con un mensaje por campo; simulación de 15 usuarios con 80 GB en plan Basic →
+140 € + 29,40 € = 169,40 € y aviso de almacenamiento; búsqueda por `FACIL` y por `b-123` → encontrado;
+JSON roto → 400; cliente y ruta inexistentes → 404.
+
+### Verificación
+
+- 78 tests de integración de la API (182 en total), que cubren los 12 puntos de A.4: alta y persistencia,
+  409, JP → 422, plan → 422, 400, cálculo y BD, avisos, 404, inmutabilidad ante cambios de tramo e IVA,
+  búsqueda y paginación, VATcomply caída o con datos erróneos o lenta, formato de errores y nombres BD = API.
+- `npm run lint` ✔ · `npm run typecheck` ✔ · `npm test` ✔ · fichero más largo: 112 líneas.
