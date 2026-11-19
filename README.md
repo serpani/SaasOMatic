@@ -37,8 +37,8 @@ Debe mostrar `v24.x` o superior y `11.x` o superior.
 ### 1. Descargar el repositorio
 
 ```powershell
-git clone https://github.com/<usuario>/<repositorio>.git
-cd <repositorio>
+git clone https://github.com/serpani/SaasOMatic.git
+cd SaasOMatic
 ```
 
 ### 2. Instalar dependencias
