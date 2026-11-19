@@ -280,3 +280,41 @@ actualiza la sección de validación fiscal con los NIF K/L/M.
 - **Escala del slider:** es lineal de 1 a 10.000, como pide `CLAUDE.md`. Con el ratón, cada píxel avanza
   unas decenas de usuarios, así que para valores pequeños es más cómodo el campo numérico o las flechas.
   Una escala logarítmica mejoraría la precisión en valores bajos, pero cambiaría lo especificado.
+
+---
+
+## Fase 5 — Verificación completa según el plan de pruebas y el README
+
+**Instrucción:** verificar cada punto de `plan-de-pruebas.pdf` y el README. La matriz completa, con la
+evidencia de cada punto, está en [`verificacion-final.md`](./verificacion-final.md).
+
+### Cómo se verificó
+
+- **README desde cero:** clon limpio del repositorio, `npm install` con npm 11 (el de Node 24),
+  `db:setup`, `dev`, `test`, `lint`, `typecheck` y `db:reset`.
+- **Navegador real:** recorrido solo con teclado (nuevo script `recorrido-teclado.cjs`), responsive y axe
+  en 3 anchos, flujos del bloque B y Lighthouse.
+- **Calidad:** búsqueda de ficheros de más de 200 líneas, de `any` y de `eslint-disable` sin justificar.
+
+### Errores de fases anteriores detectados en esta verificación
+
+Se dejan documentados porque son justo el tipo de problema que una verificación final debe encontrar:
+
+1. **Fase 4 — afirmación incorrecta.** El registro de la fase 4 dice «`npm run lint` ✔», pero los scripts
+   `.cjs` añadidos al final de esa fase no pasaban el lint (26 errores). El clon limpio lo destapó.
+   Lección aplicada: lint, typecheck y tests se ejecutan **después** del último cambio y justo antes del
+   commit, no antes de añadir ficheros.
+2. **Fase 4 — accesibilidad.** Mover el foco al `h1` en la carga inicial hacía que el primer Tab se saltara
+   «Saltar al contenido» y la navegación. Ni axe ni Lighthouse lo detectan; solo el recorrido real con teclado.
+3. **Fase 3 — instalación en Windows.** La aprobación de scripts de `better-sqlite3` se decidió probando
+   la versión 12 y se aplicó a la 13.2. En la 13.2 esa aprobación hace que npm 11 compile SQLite desde el
+   código fuente, lo que en Windows exige Visual Studio Build Tools. Se comprobó qué hace cada combinación
+   de npm 10 / npm 11 con `ci` e `install` y se dejó `"better-sqlite3": false`: con Node 24 se usa el
+   binario incluido sin compilar nada.
+
+### Resultado
+
+223 tests en verde · lint y typecheck sin errores · fichero más largo: 181 líneas · 0 `any` ·
+axe sin violaciones · Lighthouse accesibilidad 100/100 en las 4 vistas · todos los puntos de A, B y C
+verificados, salvo **NVDA (C.17)** y la **instalación real en Windows (B.1)**, que no se pueden ejecutar en
+este entorno y quedan como revisión manual.
