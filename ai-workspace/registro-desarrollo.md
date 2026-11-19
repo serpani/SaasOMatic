@@ -388,3 +388,27 @@ sin botón de guardar y con todos los controles bloqueados; (4) URL real del rep
 **Verificación:** 255 tests (5 de API y 11 de frontend nuevos) · navegador real: 6 vistas × 3 anchos sin
 violaciones de axe, sin desbordes y sin errores en consola · clic real en la tarjeta del historial → solo
 lectura con los 4 controles bloqueados y el slider inmóvil con el teclado · lint y typecheck sin errores.
+
+---
+
+## Actualización del tutorial de uso
+
+El `tutorial-de-uso.pdf` original (generado con ReportLab) no recogía las funcionalidades añadidas después.
+Se regenera con la misma herramienta y el mismo estilo, conservando su texto y estructura, y se guarda el
+generador en `fuentes/generar-tutorial.py` para poder actualizarlo en el futuro.
+
+Cambios de contenido:
+
+- **Pantalla principal:** ahora «resumen y buscador»; explica cada indicador y que la facturación estimada
+  cuenta solo la última simulación de cada cliente. La búsqueda ignora mayúsculas y tildes, y en el
+  identificador fiscal también guiones y espacios.
+- **Alta de cliente:** comprobación del identificador al salir del campo, confirmación de validez, tipos
+  admitidos (tabla España / resto de países) y enlace al cliente existente.
+- **Simular:** también se puede escribir el número exacto de usuarios.
+- **Nuevo apartado 5 «Consultar una simulación guardada»:** solo lectura, controles bloqueados, importes
+  congelados y conversión de divisa disponible.
+- **Divisa:** a qué importes afecta y qué ocurre sin servicio de divisas.
+- **Avisos y errores:** mensajes reales de la aplicación (se añaden: no se puede conectar, selecciona el país,
+  supera el plan y simulación inexistente).
+
+Verificado: los mensajes citados coinciden con el código, 2 páginas A4 y texto extraíble con tildes y símbolos.
