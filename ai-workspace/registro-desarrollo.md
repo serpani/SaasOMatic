@@ -215,3 +215,68 @@ JSON roto → 400; cliente y ruta inexistentes → 404.
   409, JP → 422, plan → 422, 400, cálculo y BD, avisos, 404, inmutabilidad ante cambios de tramo e IVA,
   búsqueda y paginación, VATcomply caída o con datos erróneos o lenta, formato de errores y nombres BD = API.
 - `npm run lint` ✔ · `npm run typecheck` ✔ · `npm test` ✔ · fichero más largo: 112 líneas.
+
+---
+
+## Fase 4 — Web: cliente HTTP con timeouts, divisas y vistas
+
+**Instrucción:** implementar el frontend según la sección *Frontend* de `CLAUDE.md`: vistas, divisas con
+caché y errores, timeouts, estados de carga, vacío y error, responsive y accesibilidad WCAG 2.1 AA.
+
+### Organización
+
+```
+app/                         proveedores (catálogo, divisa), layout (skip link, cabecera, nav) y rutas
+shared/http                  fetchWithTimeout (AbortController) + apiClient (10 s, ApiError con errores por campo)
+shared/hooks                 useResource (carga/éxito/error/reintentar, cancela peticiones obsoletas), debounce, título
+shared/catalog               planes, IVA y tramos cargados una vez para toda la app
+shared/ui                    FormField accesible, estados, PageHeading con gestión de foco, estilos por capas
+features/currency            API de divisas (30 s), caché 1 h, contexto de divisa, selector y avisos
+features/customers           buscador, tarjetas, paginación, detalle + historial, alta de cliente
+features/simulator           slider + campos sincronizados, factura en tiempo real con `calculateQuote`
+```
+
+Se añaden a la estructura de `CLAUDE.md` `app/` y `shared/{hooks,catalog,format}`: el catálogo y los
+hooks los usan varias features, y meterlos dentro de una feature crearía dependencias cruzadas. También se
+actualiza la sección de validación fiscal con los NIF K/L/M.
+
+### Decisiones
+
+| Tema | Decisión |
+|---|---|
+| Cálculo en vivo | El simulador usa `calculateQuote` y `getPlanWarnings` de `packages/shared`: mismas cifras y avisos que el backend sin pedirle nada. Al guardar, el backend recalcula y esa es la cifra registrada. |
+| Divisas | Solo visualización: se convierte en el último paso (`formatCents`). Divisas: EUR, USD, GBP y las de los países del catálogo (CZK, DKK, HUF, PLN, RON, SEK) que existan en la respuesta. |
+| Fallos de divisas | Caché fresca → no se llama. Caducada → se descarga (mientras, se usa la vieja). Error con caché → aviso con su fecha. Error sin caché → EUR con aviso. Siempre con «Reintentar». |
+| Búsqueda | Debounce de 300 ms y cancelación de la petición anterior para que una respuesta lenta no pise a una nueva. |
+| Formularios | Validación inmediata en el navegador (incluido el NIF con `validateTaxId` compartido) + errores del backend colocados en su campo. Foco al primer campo con error. 409 → enlace al cliente existente. |
+| Accesibilidad | Labels, `aria-describedby` y `aria-invalid`, errores con `aria-live` y prefijo «Error:», avisos con «Aviso:» (no solo color), slider con `aria-valuetext` («15 usuarios, total 169,40 €»), foco al `h1` en cada vista, skip link, áreas táctiles de 44 px y paleta con contraste verificado. |
+
+### Problemas encontrados en la revisión y corregidos
+
+1. **Lógica duplicada:** se había escrito un `formatInteger` local cuando ya existía en `packages/shared`.
+   Se eliminó y se usa el compartido (mismo formato que los avisos del backend).
+2. **Desbordamiento en móvil (360 px):** el recorrido con Playwright midió 54 px de scroll horizontal en el
+   simulador. Causa: `grid-template-columns: 1fr` y `fieldset` no encogen por debajo de su contenido. Se
+   usó `minmax(0, 1fr)` y `min-width: 0`.
+3. **axe en navegador real:** detectó que la tabla de desglose, al poder desplazarse, no era accesible por
+   teclado (`scrollable-region-focusable`). Se ajustó el relleno en móvil para que quepa y se convirtió el
+   contenedor en región con nombre y enfocable para los casos con importes largos.
+4. **Proxy del entorno:** Chromium enviaba también `localhost` al proxy (405); se excluyó con `bypass`.
+5. **Comprobación de que los tests sirven:** se introdujeron fallos a propósito (quitar la conversión de
+   divisa y quitar `aria-describedby`) y los tests los detectaron (2 y 4 fallos). Código restaurado.
+
+### Verificación
+
+- 42 tests de frontend (222 en total): timeouts de 10 s y 30 s, errores de API, conversión con tipos
+  simulados, caché de 1 h, API de divisas caída con y sin caché, debounce, paginación, estados de carga,
+  vacío y error con reintento, alta (validación, NIF erróneo, 409, 422), simulador (slider, sincronía,
+  divisa, avisos, guardado, error), foco y **axe sin violaciones en todas las vistas**.
+- Navegador real: 5 vistas × 3 anchos sin violaciones de axe (incluido contraste), sin scroll horizontal y
+  sin errores en consola; flujos B.2, B.3, B.5, B.7–B.12 verificados (ver `verificaciones/` y `capturas/`).
+- `npm run lint` ✔ · `npm run typecheck` ✔ · `npm test` ✔ · `vite build` ✔ · fichero más largo: 108 líneas.
+
+### Puntos abiertos para revisar
+
+- **Escala del slider:** es lineal de 1 a 10.000, como pide `CLAUDE.md`. Con el ratón, cada píxel avanza
+  unas decenas de usuarios, así que para valores pequeños es más cómodo el campo numérico o las flechas.
+  Una escala logarítmica mejoraría la precisión en valores bajos, pero cambiaría lo especificado.

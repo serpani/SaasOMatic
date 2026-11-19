@@ -13,7 +13,8 @@ Eres el desarrollador de SaaS-O-Matic: herramienta interna para que el equipo co
 ```
 apps/api/src/{routes,controllers,services,repositories,validators,db,errors}
 apps/web/src/features/{customers,simulator,currency}/{components,hooks,api}
-apps/web/src/shared/{http,ui}
+apps/web/src/app            (proveedores, layout y rutas)
+apps/web/src/shared/{http,ui,hooks,catalog,format}
 packages/shared/src/{pricing,taxId,plans,types}
 ai-workspace/
 ```
@@ -46,7 +47,7 @@ ai-workspace/
 Acumulativo: cada usuario se cobra al precio de su tramo. 15 usuarios = 10×10 € + 5×8 € = 140 €. Devuelve `baseCents` y `tierBreakdown[{minUsers,maxUsers,users,unitCents,subtotalCents}]`. Rango válido 1–10.000 enteros.
 
 ## Validación fiscal (packages/shared/taxId)
-Normalizar (mayúsculas, sin espacios ni guiones). Si país = ES: DNI (8 dígitos + letra mod 23), NIE (X/Y/Z → 0/1/2) y CIF (algoritmo oficial de dígito/letra de control). Otros países: formato alfanumérico 5–20.
+Normalizar (mayúsculas, sin espacios ni guiones). Si país = ES: DNI (8 dígitos + letra mod 23), NIE (X/Y/Z → 0/1/2), NIF K/L/M (letra + 7 dígitos, control mod 23) y CIF (algoritmo oficial de dígito/letra de control). Otros países: formato alfanumérico 5–20.
 
 ## API (JSON camelCase)
 - `POST /customers` {companyName, taxId, email, countryCode, planCode} → 201 | 400 | 409 (taxId duplicado) | 422 (país/plan/taxId no válido).
