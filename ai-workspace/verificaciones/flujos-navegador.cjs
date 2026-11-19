@@ -53,11 +53,11 @@ const log = (...a) => console.log(...a);
   await page.getByLabel('Email de contacto').fill('a@prueba.es');
   await page.getByLabel('Plan').selectOption('pro');
   await page.getByRole('button', { name: 'Guardar' }).click();
-  log('B.2 NIF erróneo →', await page.locator('.field__error').allInnerTexts(), '| foco en:', await page.evaluate(() => document.activeElement?.getAttribute('aria-invalid')));
+  log('B.2 NIF erróneo →', await page.locator('.field__message--error').allInnerTexts(), '| foco en:', await page.evaluate(() => document.activeElement?.getAttribute('aria-invalid')));
   await page.getByLabel('Identificador fiscal').fill('B12345674');
   await page.getByRole('button', { name: 'Guardar' }).click();
   await page.getByRole('link', { name: 'Ver el cliente existente' }).waitFor();
-  log('B.3 duplicado →', await page.locator('.field__error').allInnerTexts());
+  log('B.3 duplicado →', await page.locator('.field__message--error').allInnerTexts());
   await page.screenshot({ path: path.join(OUT, 'flujo-alta-duplicado.png'), fullPage: true });
 
   // B.11 sin API de divisas (y sin caché) → aviso y EUR

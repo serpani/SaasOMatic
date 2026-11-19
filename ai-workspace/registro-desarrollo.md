@@ -318,3 +318,34 @@ Se dejan documentados porque son justo el tipo de problema que una verificación
 axe sin violaciones · Lighthouse accesibilidad 100/100 en las 4 vistas · todos los puntos de A, B y C
 verificados, salvo **NVDA (C.17)** y la **instalación real en Windows (B.1)**, que no se pueden ejecutar en
 este entorno y quedan como revisión manual.
+
+---
+
+## Ajuste tras revisión — Validación visible del identificador fiscal en el alta
+
+**Revisión:** al probar el alta tras el rediseño visual se detectó que «no se veía que se validaran los datos
+fiscales». La validación existía (algoritmo oficial en el navegador y de nuevo en el backend), pero **solo se
+mostraba al pulsar «Guardar»**: al escribir el NIF y pasar al siguiente campo no había ninguna señal, y cuando
+era correcto nunca se confirmaba. Para el comercial era como si no se comprobara nada.
+
+**Cambio:**
+
+| Momento | Qué ve el comercial |
+|---|---|
+| Sale del campo con un NIF erróneo | `Error: El identificador fiscal no es válido. Revisa los números y la letra o dígito de control.` |
+| Escribe un identificador correcto | `Correcto: CIF válido, carácter de control correcto. Se guardará como B12345674.` (DNI, NIE, NIF K/L/M o CIF) |
+| Corrige tras un error | El mensaje se actualiza en cada tecla |
+| Cambia el país | Se vuelve a comprobar (p. ej. de España a Francia: «Fuera de España solo se comprueba el formato») |
+| Aún no ha elegido país | `Nota: Selecciona el país para comprobar el identificador fiscal.` |
+
+- El mensaje de cada campo es único, va asociado con `aria-describedby`, se anuncia con `aria-live` y lleva un
+  prefijo de texto (Error / Correcto / Nota), no solo color.
+- El resto de campos también se valida al salir de ellos. **Decisión de UX revisada en la prueba con
+  navegador:** un campo vacío por el que solo se pasa con el teclado no muestra «es obligatorio» hasta pulsar
+  «Guardar», para no regañar al usuario por un campo que aún no ha rellenado.
+- La lógica de validación se separa en `customerValidation.ts` (validación + confirmación) para mantener el
+  hook pequeño.
+
+**Verificación:** 16 tests nuevos (239 en total) · navegador real: error al salir del campo, confirmación al
+corregir, axe sin violaciones (incluido contraste del mensaje verde) · capturas `alta-nif-error.png` y
+`alta-nif-valido.png` · lint y typecheck sin errores.
