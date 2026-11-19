@@ -159,3 +159,16 @@ select:focus-visible {
     grid-column: 1 / -1;
   }
 }
+
+/* Controles bloqueados (p. ej. simulación guardada en solo lectura): se ven inactivos pero legibles. */
+input:not([type='range']):disabled,
+select:disabled {
+  background: var(--color-surface-alt);
+  border-style: dashed;
+  color: var(--color-muted);
+  cursor: not-allowed;
+}
+
+input[type='range']:disabled {
+  cursor: not-allowed;
+}

@@ -1,4 +1,4 @@
-import type { Customer, Plan, PricingTierRecord, Simulation, TaxRate } from '@saasomatic/shared';
+import type { Customer, DashboardSummary, Plan, PricingTierRecord, Simulation, TaxRate } from '@saasomatic/shared';
 
 export const plans: Plan[] = [
   { code: 'basic', name: 'Basic', storageGb: 50, apiCalls: 10_000 },
@@ -60,4 +60,16 @@ export const ratesPayload = {
   result: 'success',
   base_code: 'EUR',
   rates: { EUR: 1, USD: 1.1, GBP: 0.8, SEK: 11.5 },
+};
+
+export const dashboard: DashboardSummary = {
+  customersCount: 3,
+  simulationsCount: 5,
+  customersWithSimulationsCount: 2,
+  estimatedMonthlyCents: 26_940,
+  averageMonthlyCents: 13_470,
+  customersByPlan: [
+    { planCode: 'basic', planName: 'Basic', customers: 1 },
+    { planCode: 'pro', planName: 'Pro', customers: 2 },
+  ],
 };

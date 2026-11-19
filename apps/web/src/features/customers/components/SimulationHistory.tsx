@@ -1,10 +1,14 @@
 import type { Simulation } from '@saasomatic/shared';
 import { formatInteger } from '@saasomatic/shared';
+import { Link } from 'react-router';
 import { formatDateTime, formatPercent } from '../../../shared/format/formatters';
 import { EmptyState } from '../../../shared/ui/StatusMessages';
 import { useCurrency } from '../../currency/hooks/CurrencyContext';
 
-/** Historial de simulaciones guardadas, de la más reciente a la más antigua. El total mensual va destacado. */
+/**
+ * Historial de simulaciones guardadas, de la más reciente a la más antigua. El total mensual va destacado.
+ * Cada tarjeta abre la simulación en el simulador, en solo lectura.
+ */
 export function SimulationHistory({ simulations }: { simulations: Simulation[] }) {
   const { formatCents } = useCurrency();
 
@@ -22,7 +26,11 @@ export function SimulationHistory({ simulations }: { simulations: Simulation[] }
         <li key={s.id} className="card history__item">
           <div className="history__body">
             <h3 className="history__date">
-              <time dateTime={s.createdAt}>{formatDateTime(s.createdAt)}</time>
+              {/* El enlace se estira para que toda la tarjeta abra la simulación en solo lectura. */}
+              <Link to={`/customers/${s.customerId}/simulations/${s.id}`} className="history__link">
+                <span className="visually-hidden">Ver simulación del </span>
+                <time dateTime={s.createdAt}>{formatDateTime(s.createdAt)}</time>
+              </Link>
             </h3>
             <dl className="data-list data-list--grid">
               <div>

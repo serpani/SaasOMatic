@@ -30,11 +30,13 @@ export function EmptyState({ children }: { children: ReactNode }) {
   return <div className="state state--empty">{children}</div>;
 }
 
-/** Aviso que no depende solo del color: lleva siempre el texto "Aviso:". */
-export function Notice({ children, tone = 'warning' }: { children: ReactNode; tone?: 'warning' | 'success' }) {
+/** Avisos que no dependen solo del color: siempre llevan un prefijo de texto. */
+const NOTICE_PREFIX = { warning: 'Aviso:', success: 'Hecho:', info: 'Nota:' } as const;
+
+export function Notice({ children, tone = 'warning' }: { children: ReactNode; tone?: keyof typeof NOTICE_PREFIX }) {
   return (
     <div className={`notice notice--${tone}`}>
-      <strong>{tone === 'warning' ? 'Aviso:' : 'Hecho:'}</strong> {children}
+      <strong>{NOTICE_PREFIX[tone]}</strong> {children}
     </div>
   );
 }

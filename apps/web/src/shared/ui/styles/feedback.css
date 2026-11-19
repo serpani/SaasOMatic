@@ -80,3 +80,8 @@
   font-size: 0.9375rem;
   margin: 0 0 var(--space-3);
 }
+
+.notice--info {
+  background: var(--color-primary-soft);
+  color: var(--color-primary-strong);
+}

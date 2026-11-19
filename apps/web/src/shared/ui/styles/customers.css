@@ -72,6 +72,7 @@
 }
 
 .history__item {
+  position: relative;
   display: grid;
   grid-template-columns: minmax(0, 1fr);
   gap: 0;
@@ -127,4 +128,28 @@
     text-align: right;
     border-left: 1px solid #c7d2fe;
   }
+}
+
+/* Toda la tarjeta del historial abre la simulación (enlace estirado, como en las tarjetas de cliente). */
+.history__link {
+  color: inherit;
+  text-decoration: none;
+}
+
+.history__link::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+}
+
+.history__item:hover,
+.history__item:focus-within {
+  border-color: #c7d2fe;
+  box-shadow: var(--shadow-lg);
+}
+
+.history__link:hover {
+  color: var(--color-primary-strong);
+  text-decoration: underline;
 }

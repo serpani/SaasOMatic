@@ -9,12 +9,15 @@ interface UsageControlsProps {
   onUsers: (value: string) => void;
   onStorage: (value: string) => void;
   onApiCalls: (value: string) => void;
+  /** Simulación guardada: todos los controles bloqueados (fieldset disabled). */
+  readOnly?: boolean;
 }
 
 /** Slider + campo numérico sincronizados para los usuarios, y campos de almacenamiento y llamadas. */
-export function UsageControls({ inputs, users, totalLabel, errors, onUsers, onStorage, onApiCalls }: UsageControlsProps) {
+export function UsageControls(props: UsageControlsProps) {
+  const { inputs, users, totalLabel, errors, onUsers, onStorage, onApiCalls, readOnly = false } = props;
   return (
-    <fieldset className="card usage">
+    <fieldset className="card usage" disabled={readOnly}>
       <legend className="usage__legend">Consumo estimado</legend>
       <div className="usage__users">
         <div className="usage__users-head">

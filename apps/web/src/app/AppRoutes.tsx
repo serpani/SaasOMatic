@@ -2,6 +2,7 @@ import { Link, Route, Routes } from 'react-router';
 import { CustomerDetailPage } from '../features/customers/components/CustomerDetailPage';
 import { NewCustomerPage } from '../features/customers/components/NewCustomerPage';
 import { SearchPage } from '../features/customers/components/SearchPage';
+import { SavedSimulationPage } from '../features/simulator/components/SavedSimulationPage';
 import { SimulatorPage } from '../features/simulator/components/SimulatorPage';
 import { PageHeading } from '../shared/ui/PageHeading';
 
@@ -23,6 +24,7 @@ export function AppRoutes() {
       <Route path="/customers/new" element={<NewCustomerPage />} />
       <Route path="/customers/:id" element={<CustomerDetailPage />} />
       <Route path="/customers/:id/simulate" element={<SimulatorPage />} />
+      <Route path="/customers/:id/simulations/:simulationId" element={<SavedSimulationPage />} />
       <Route path="*" element={<NotFoundPage />} />
     </Routes>
   );

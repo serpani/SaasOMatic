@@ -1,7 +1,7 @@
 import { vi } from 'vitest';
 import { EXCHANGE_RATES_URL } from '../features/currency/api/exchangeRatesApi';
 import { API_URL } from '../shared/http/apiClient';
-import { customer, plans, pricingTiers, ratesPayload, simulation, taxRates } from './fixtures';
+import { customer, dashboard, plans, pricingTiers, ratesPayload, simulation, taxRates } from './fixtures';
 
 export type Handler = (init: RequestInit | undefined, url: URL) => Response | Promise<Response>;
 
@@ -19,6 +19,8 @@ export const defaultHandlers = (): Record<string, Handler> => ({
   'GET /customers': () => json({ items: [customer], total: 1, page: 1, pageSize: 12 }),
   'GET /customers/1': () => json(customer),
   'GET /customers/1/simulations': () => json([simulation]),
+  'GET /simulations/7': () => json(simulation),
+  'GET /dashboard': () => json(dashboard),
   RATES: () => json(ratesPayload),
 });
 
