@@ -14,7 +14,7 @@ Eres el desarrollador de SaaS-O-Matic: herramienta interna para que el equipo co
 apps/api/src/{routes,controllers,services,repositories,validators,db,errors}
 apps/web/src/features/{customers,simulator,currency}/{components,hooks,api}
 apps/web/src/shared/{http,ui}
-packages/shared/src/{pricing,taxId,types}
+packages/shared/src/{pricing,taxId,plans,types}
 ai-workspace/
 ```
 
