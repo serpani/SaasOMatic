@@ -5,6 +5,7 @@ import { EmptyState, ErrorState, LoadingState } from '../../../shared/ui/StatusM
 import { PAGE_SIZE } from '../api/customersApi';
 import { useCustomerSearch } from '../hooks/useCustomerSearch';
 import { CustomerCard } from './CustomerCard';
+import { DashboardSummary } from './DashboardSummary';
 import { Pagination } from './Pagination';
 
 /** Buscador y dashboard: resultados en tarjetas mientras se escribe. */
@@ -18,6 +19,8 @@ export function SearchPage() {
           Nuevo cliente
         </Link>
       </PageHeading>
+
+      <DashboardSummary />
 
       <search className="search-box">
         <label htmlFor="customer-search">Buscar por nombre de empresa o identificador fiscal</label>
