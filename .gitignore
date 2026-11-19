@@ -1,0 +1,11 @@
+node_modules/
+dist/
+coverage/
+*.log
+.env
+*.sqlite
+*.sqlite-journal
+*.db
+*.db-wal
+*.db-shm
+.vite/
