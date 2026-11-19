@@ -1,0 +1,154 @@
+fieldset.usage {
+  min-width: 0; /* Un fieldset no encoge por debajo de su contenido por defecto. */
+  margin: 0;
+}
+
+/* La leyenda se saca del borde del fieldset para que se vea como el título de la tarjeta. */
+.usage__legend {
+  float: left;
+  width: 100%;
+  padding: 0;
+  margin-bottom: var(--space-3);
+  font-weight: 700;
+  font-size: 1.125rem;
+}
+
+.usage__legend + * {
+  clear: both;
+}
+
+.usage__users {
+  padding: var(--space-3);
+  margin-bottom: var(--space-4);
+  border-radius: var(--radius);
+  background: var(--color-surface-alt);
+  border: 1px solid var(--color-border-soft);
+}
+
+.usage__users-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-1) var(--space-3);
+}
+
+.usage__users label {
+  font-weight: 600;
+}
+
+.usage__readout {
+  font-size: 2rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  color: var(--color-primary-strong);
+  font-variant-numeric: tabular-nums;
+}
+
+input[type='range'] {
+  width: 100%;
+  min-height: var(--touch);
+  margin: 0;
+  background: transparent;
+  accent-color: var(--color-primary);
+  cursor: pointer;
+}
+
+.usage__scale {
+  display: flex;
+  justify-content: space-between;
+  color: var(--color-muted);
+  font-size: 0.8125rem;
+}
+
+.usage__pair {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 0 var(--space-3);
+}
+
+/* Factura: total grande arriba, base e IVA debajo, y el desglose al final. */
+.quote {
+  margin-bottom: var(--space-3);
+}
+
+.quote__summary {
+  margin: 0 0 var(--space-4);
+  padding: var(--space-4);
+  border-radius: var(--radius);
+  background: linear-gradient(135deg, var(--color-primary-soft), #f5f3ff);
+  border: 1px solid #c7d2fe;
+}
+
+.quote__total {
+  margin: 0 0 var(--space-3);
+}
+
+.quote__total dt {
+  color: var(--color-primary-strong);
+  font-size: 0.8125rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.quote__total dd {
+  margin: 0;
+  font-size: clamp(2rem, 6vw, 2.75rem);
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  line-height: 1.1;
+  color: var(--color-primary-strong);
+  font-variant-numeric: tabular-nums;
+}
+
+.quote__summary .amounts {
+  padding-top: var(--space-3);
+  border-top: 1px solid #c7d2fe;
+}
+
+.quote__actions {
+  margin-top: 0;
+}
+
+.tier-bar {
+  display: flex;
+  gap: 3px;
+  height: 0.625rem;
+  margin-bottom: var(--space-3);
+  border-radius: var(--radius-pill);
+  overflow: hidden;
+  background: var(--color-border-soft);
+}
+
+.tier-bar__segment {
+  min-width: 4px;
+  transition: flex-grow 0.2s;
+}
+
+.tier-dot {
+  display: inline-block;
+  width: 0.625rem;
+  height: 0.625rem;
+  margin-right: var(--space-2);
+  border-radius: 50%;
+  vertical-align: 0.05em;
+}
+
+.tier-dot--0 {
+  background: #4f46e5;
+}
+
+.tier-dot--1 {
+  background: #8b5cf6;
+}
+
+.tier-dot--2 {
+  background: #0d9488;
+}
+
+@media (min-width: 40em) {
+  .usage__pair {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}

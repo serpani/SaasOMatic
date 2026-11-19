@@ -1,4 +1,5 @@
 import { Link } from 'react-router';
+import { SearchIcon } from '../../../shared/ui/Identity';
 import { PageHeading } from '../../../shared/ui/PageHeading';
 import { EmptyState, ErrorState, LoadingState } from '../../../shared/ui/StatusMessages';
 import { PAGE_SIZE } from '../api/customersApi';
@@ -20,14 +21,17 @@ export function SearchPage() {
 
       <search className="search-box">
         <label htmlFor="customer-search">Buscar por nombre de empresa o identificador fiscal</label>
-        <input
-          id="customer-search"
-          type="search"
-          value={query}
-          onChange={(event) => setQuery(event.target.value)}
-          placeholder="Ej.: Acme o B12345674"
-          autoComplete="off"
-        />
+        <div className="search-box__control">
+          <SearchIcon className="search-box__icon" />
+          <input
+            id="customer-search"
+            type="search"
+            value={query}
+            onChange={(event) => setQuery(event.target.value)}
+            placeholder="Ej.: Acme o B12345674"
+            autoComplete="off"
+          />
+        </div>
       </search>
 
       <section aria-labelledby="results-title" aria-busy={result.status === 'loading'}>

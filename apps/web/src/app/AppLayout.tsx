@@ -13,6 +13,9 @@ export function AppLayout({ children }: { children: ReactNode }) {
       <header className="app-header">
         <div className="app-header__inner">
           <Link to="/" className="app-header__brand">
+            <span className="app-header__logo" aria-hidden="true">
+              S
+            </span>
             SaaS-O-Matic
           </Link>
           <nav aria-label="Principal">

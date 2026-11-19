@@ -3,6 +3,7 @@ import { Link, useLocation, useParams } from 'react-router';
 import { useCatalog } from '../../../shared/catalog/CatalogContext';
 import { formatDateTime, formatPercent } from '../../../shared/format/formatters';
 import { useResource } from '../../../shared/hooks/useResource';
+import { Avatar, CountryChip, PlanChip } from '../../../shared/ui/Identity';
 import { PageHeading } from '../../../shared/ui/PageHeading';
 import { ErrorState, LoadingState, Notice } from '../../../shared/ui/StatusMessages';
 import { getCustomer, listSimulations } from '../api/customersApi';
@@ -25,54 +26,70 @@ export function CustomerDetailPage() {
 
   return (
     <>
-      <PageHeading title={c.companyName}>
+      <PageHeading
+        title={c.companyName}
+        leading={<Avatar name={c.companyName} size="lg" />}
+        meta={
+          <>
+            <CountryChip>{taxRate?.countryName ?? c.countryCode}</CountryChip>
+            <PlanChip code={c.planCode}>Plan {plan?.name ?? c.planCode}</PlanChip>
+          </>
+        }
+      >
         <Link to={`/customers/${c.id}/simulate`} className="button">
           Nueva simulación
         </Link>
       </PageHeading>
       {flash && <Notice tone="success">{flash}</Notice>}
 
-      <section className="card" aria-labelledby="customer-data-title">
-        <h2 id="customer-data-title">Datos del cliente</h2>
-        <dl className="data-list">
-          <div>
-            <dt>Identificador fiscal</dt>
-            <dd>{c.taxId}</dd>
-          </div>
-          <div>
-            <dt>Email de contacto</dt>
-            <dd>
-              <a href={`mailto:${c.email}`}>{c.email}</a>
-            </dd>
-          </div>
-          <div>
-            <dt>País</dt>
-            <dd>
-              {taxRate?.countryName ?? c.countryCode}
-              {taxRate && ` (IVA ${formatPercent(taxRate.ratePercent)})`}
-            </dd>
-          </div>
-          <div>
-            <dt>Plan</dt>
-            <dd>
-              {plan
-                ? `${plan.name}: ${formatInteger(plan.storageGb)} GB y ${formatInteger(plan.apiCalls)} llamadas/mes`
-                : c.planCode}
-            </dd>
-          </div>
-          <div>
-            <dt>Alta</dt>
-            <dd>{formatDateTime(c.createdAt)}</dd>
-          </div>
-        </dl>
-      </section>
+      <div className="split split--sidebar">
+        <section className="card sticky" aria-labelledby="customer-data-title">
+          <h2 id="customer-data-title">Datos del cliente</h2>
+          <dl className="data-list">
+            <div>
+              <dt>Identificador fiscal</dt>
+              <dd className="mono">{c.taxId}</dd>
+            </div>
+            <div>
+              <dt>Email de contacto</dt>
+              <dd>
+                <a href={`mailto:${c.email}`}>{c.email}</a>
+              </dd>
+            </div>
+            <div>
+              <dt>País</dt>
+              <dd>
+                {taxRate?.countryName ?? c.countryCode}
+                {taxRate && ` (IVA ${formatPercent(taxRate.ratePercent)})`}
+              </dd>
+            </div>
+            <div>
+              <dt>Plan</dt>
+              <dd>
+                {plan
+                  ? `${plan.name}: ${formatInteger(plan.storageGb)} GB y ${formatInteger(plan.apiCalls)} llamadas/mes`
+                  : c.planCode}
+              </dd>
+            </div>
+            <div>
+              <dt>Alta</dt>
+              <dd>{formatDateTime(c.createdAt)}</dd>
+            </div>
+          </dl>
+        </section>
 
-      <section aria-labelledby="history-title" aria-busy={history.status === 'loading'}>
-        <h2 id="history-title">Historial de simulaciones</h2>
-        {history.status === 'loading' && <LoadingState label="Cargando simulaciones…" />}
-        {history.status === 'error' && <ErrorState message={history.error.message} onRetry={history.retry} />}
-        {history.status === 'success' && <SimulationHistory simulations={history.data} />}
-      </section>
+        <section aria-labelledby="history-title" aria-busy={history.status === 'loading'}>
+          <h2 id="history-title" className="section-title">
+            Historial de simulaciones
+            {history.status === 'success' && history.data.length > 0 && (
+              <span className="section-title__count">({history.data.length})</span>
+            )}
+          </h2>
+          {history.status === 'loading' && <LoadingState label="Cargando simulaciones…" />}
+          {history.status === 'error' && <ErrorState message={history.error.message} onRetry={history.retry} />}
+          {history.status === 'success' && <SimulationHistory simulations={history.data} />}
+        </section>
+      </div>
     </>
   );
 }

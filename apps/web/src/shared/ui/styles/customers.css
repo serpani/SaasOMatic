@@ -1,0 +1,130 @@
+/* Tarjeta del buscador: el enlace del título se estira para cubrir toda la tarjeta. */
+.customer-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  padding: var(--space-3) var(--space-4) var(--space-4);
+  transition: box-shadow 0.15s, transform 0.15s, border-color 0.15s;
+}
+
+.customer-card:hover,
+.customer-card:focus-within {
+  border-color: #c7d2fe;
+  box-shadow: var(--shadow-lg);
+  transform: translateY(-2px);
+}
+
+.customer-card__head {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  min-width: 0;
+}
+
+.customer-card__id {
+  min-width: 0;
+}
+
+.customer-card__link {
+  color: var(--color-text);
+  text-decoration: none;
+}
+
+.customer-card__link:hover {
+  color: var(--color-primary-strong);
+}
+
+.customer-card__link::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+}
+
+.customer-card__taxid {
+  margin: 0.125rem 0 0;
+  color: var(--color-muted);
+  font-size: 0.875rem;
+}
+
+.customer-card__tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  margin: 0;
+  margin-top: auto;
+  padding-top: var(--space-3);
+  border-top: 1px solid var(--color-border-soft);
+}
+
+.customer-card__tags dd {
+  margin: 0;
+}
+
+/* Historial: cifras en rejilla a la izquierda y total destacado a la derecha (debajo en móvil). */
+.history {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: var(--space-3);
+}
+
+.history__item {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 0;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+}
+
+.history__body {
+  padding: var(--space-3) var(--space-4) var(--space-4);
+}
+
+.history__date {
+  font-size: 0.9375rem;
+  color: var(--color-muted);
+  font-weight: 600;
+  margin-bottom: var(--space-3);
+}
+
+.history__total {
+  margin: 0;
+  padding: var(--space-3) var(--space-4);
+  background: var(--color-primary-soft);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.history__total dt {
+  color: var(--color-primary-strong);
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.history__total dd {
+  margin: 0;
+  font-size: 1.5rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  color: var(--color-primary-strong);
+  font-variant-numeric: tabular-nums;
+}
+
+@media (min-width: 40em) {
+  .history__item {
+    grid-template-columns: minmax(0, 1fr) auto;
+  }
+
+  .history__total {
+    min-width: 12rem;
+    text-align: right;
+    border-left: 1px solid #c7d2fe;
+  }
+}

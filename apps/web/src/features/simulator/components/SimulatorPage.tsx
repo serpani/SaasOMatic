@@ -2,7 +2,9 @@ import type { Customer } from '@saasomatic/shared';
 import { useNavigate, useParams } from 'react-router';
 import { type Catalog } from '../../../shared/catalog/catalogApi';
 import { useCatalog } from '../../../shared/catalog/CatalogContext';
+import { formatPercent } from '../../../shared/format/formatters';
 import { useResource } from '../../../shared/hooks/useResource';
+import { CountryChip, PlanChip } from '../../../shared/ui/Identity';
 import { PageHeading } from '../../../shared/ui/PageHeading';
 import { ErrorState, LoadingState, Notice } from '../../../shared/ui/StatusMessages';
 import { useCurrency } from '../../currency/hooks/CurrencyContext';
@@ -43,11 +45,19 @@ function Simulator({ customer, catalog }: { customer: Customer; catalog: Catalog
 
   return (
     <>
-      <PageHeading title={`Simulación para ${customer.companyName}`} />
-      <p>
-        País: {taxRate?.countryName ?? customer.countryCode} · Plan: {plan?.name ?? customer.planCode}
-      </p>
-      <div className="simulator">
+      <PageHeading
+        title={`Simulación para ${customer.companyName}`}
+        meta={
+          <>
+            <CountryChip>
+              {taxRate?.countryName ?? customer.countryCode}
+              {taxRate && ` · IVA ${formatPercent(taxRate.ratePercent)}`}
+            </CountryChip>
+            <PlanChip code={customer.planCode}>Plan {plan?.name ?? customer.planCode}</PlanChip>
+          </>
+        }
+      />
+      <div className="split">
         <UsageControls
           inputs={sim.inputs}
           users={sim.users}
@@ -57,7 +67,7 @@ function Simulator({ customer, catalog }: { customer: Customer; catalog: Catalog
           onStorage={sim.setStorage}
           onApiCalls={sim.setApiCalls}
         />
-        <div>
+        <div className="sticky">
           <QuoteSummary quote={sim.quote} />
           <div role="status">
             {sim.warnings.map((warning) => (
@@ -65,7 +75,7 @@ function Simulator({ customer, catalog }: { customer: Customer; catalog: Catalog
             ))}
           </div>
           {sim.saveError && <ErrorState message={sim.saveError} onRetry={() => void onSave()} />}
-          <div className="form__actions">
+          <div className="form__actions quote__actions">
             <button type="button" className="button" disabled={!sim.canSave} onClick={() => void onSave()}>
               {sim.saving ? 'Guardando…' : 'Guardar simulación'}
             </button>

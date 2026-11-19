@@ -1,7 +1,8 @@
 /* Mobile-first: una columna por defecto; se amplía en tablet y escritorio. */
 .app-header {
-  background: var(--color-header);
+  background: linear-gradient(120deg, var(--color-header), var(--color-header-end));
   color: var(--color-on-header);
+  box-shadow: var(--shadow-md);
 }
 
 .app-header__inner {
@@ -23,12 +24,25 @@
 }
 
 .app-header__brand {
-  font-weight: 700;
-  font-size: 1.25rem;
-  text-decoration: none;
-  min-height: var(--touch);
   display: inline-flex;
   align-items: center;
+  gap: var(--space-2);
+  min-height: var(--touch);
+  font-weight: 800;
+  font-size: 1.2rem;
+  letter-spacing: -0.01em;
+  text-decoration: none;
+}
+
+.app-header__logo {
+  display: grid;
+  place-items: center;
+  width: 2rem;
+  height: 2rem;
+  border-radius: var(--radius-sm);
+  background: linear-gradient(135deg, #818cf8, #c084fc);
+  color: var(--color-header);
+  font-size: 1rem;
 }
 
 .app-nav {
@@ -36,24 +50,37 @@
   margin: 0;
   padding: 0;
   display: flex;
-  gap: var(--space-3);
+  gap: var(--space-1);
 }
 
 .app-nav a {
   min-height: var(--touch);
   display: inline-flex;
   align-items: center;
+  padding: 0 var(--space-3);
+  border-radius: var(--radius-pill);
+  color: var(--color-on-header-muted);
+  font-weight: 500;
+  text-decoration: none;
+  transition: background-color 0.15s;
 }
 
+.app-nav a:hover {
+  color: var(--color-on-header);
+  background: rgb(255 255 255 / 8%);
+}
+
+/* La página actual se marca con fondo y peso, no solo con color. */
 .app-nav a[aria-current='page'] {
+  color: var(--color-on-header);
+  background: rgb(255 255 255 / 16%);
   font-weight: 700;
-  text-decoration-thickness: 3px;
 }
 
 .app-main {
   max-width: var(--content-width);
   margin: 0 auto;
-  padding: var(--space-4) var(--space-3) var(--space-5);
+  padding: var(--space-4) var(--space-3) var(--space-6);
 }
 
 .app-main:focus {
@@ -69,9 +96,23 @@
   margin-bottom: var(--space-4);
 }
 
+.page-heading__main {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  min-width: 0;
+}
+
 .page-heading h1 {
   margin: 0;
   overflow-wrap: anywhere;
+}
+
+.page-heading__meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  margin-top: var(--space-2);
 }
 
 .card-grid {
@@ -83,7 +124,7 @@
   gap: var(--space-3);
 }
 
-.simulator {
+.split {
   display: grid;
   grid-template-columns: minmax(0, 1fr);
   gap: var(--space-4);
@@ -91,6 +132,10 @@
 }
 
 @media (min-width: 40em) {
+  .app-main {
+    padding-top: var(--space-5);
+  }
+
   .card-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
@@ -109,7 +154,22 @@
     grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 
-  .simulator {
-    grid-template-columns: minmax(0, 2fr) minmax(0, 3fr);
+  .split {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.5fr);
   }
+
+  .split--sidebar {
+    grid-template-columns: minmax(16rem, 1fr) minmax(0, 2fr);
+  }
+
+  .sticky {
+    position: sticky;
+    top: var(--space-4);
+  }
+}
+
+/* Sobre el fondo de la página los chips neutros necesitan fondo blanco y borde para destacar. */
+.page-heading__meta .chip:not(.chip--pro, .chip--enterprise) {
+  background: var(--color-surface);
+  box-shadow: inset 0 0 0 1px var(--color-border-soft);
 }

@@ -15,9 +15,15 @@ interface UsageControlsProps {
 export function UsageControls({ inputs, users, totalLabel, errors, onUsers, onStorage, onApiCalls }: UsageControlsProps) {
   return (
     <fieldset className="card usage">
-      <legend>Consumo estimado</legend>
+      <legend className="usage__legend">Consumo estimado</legend>
       <div className="usage__users">
-        <label htmlFor="users-slider">Usuarios activos (deslizador)</label>
+        <div className="usage__users-head">
+          <label htmlFor="users-slider">Usuarios activos (deslizador)</label>
+          {/* Lectura visual grande; el valor ya lo anuncia el propio deslizador. */}
+          <span className="usage__readout" aria-hidden="true">
+            {formatInteger(users)}
+          </span>
+        </div>
         <input
           id="users-slider"
           type="range"
@@ -36,12 +42,14 @@ export function UsageControls({ inputs, users, totalLabel, errors, onUsers, onSt
       <FormField label="Usuarios activos" error={errors.users} hint="Entre 1 y 10.000.">
         <input inputMode="numeric" value={inputs.usersText} onChange={(e) => onUsers(e.target.value)} />
       </FormField>
-      <FormField label="Almacenamiento (GB)" error={errors.storageGb}>
-        <input inputMode="numeric" value={inputs.storageText} onChange={(e) => onStorage(e.target.value)} />
-      </FormField>
-      <FormField label="Llamadas a la API al mes" error={errors.apiCalls}>
-        <input inputMode="numeric" value={inputs.apiCallsText} onChange={(e) => onApiCalls(e.target.value)} />
-      </FormField>
+      <div className="usage__pair">
+        <FormField label="Almacenamiento (GB)" error={errors.storageGb}>
+          <input inputMode="numeric" value={inputs.storageText} onChange={(e) => onStorage(e.target.value)} />
+        </FormField>
+        <FormField label="Llamadas a la API al mes" error={errors.apiCalls}>
+          <input inputMode="numeric" value={inputs.apiCallsText} onChange={(e) => onApiCalls(e.target.value)} />
+        </FormField>
+      </div>
     </fieldset>
   );
 }

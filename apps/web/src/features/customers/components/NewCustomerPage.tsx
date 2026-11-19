@@ -35,41 +35,43 @@ export function NewCustomerPage() {
       {catalog.status === 'success' && (
         <form ref={formRef} className="card form" onSubmit={onSubmit} noValidate>
           {form.formError && <ErrorState message={form.formError} />}
-          <FormField label="Nombre de la empresa" error={errors.companyName}>
-            <input value={values.companyName} onChange={(e) => setField('companyName', e.target.value)} autoComplete="organization" required />
-          </FormField>
-          <FormField label="País" error={errors.countryCode} hint="Solo Unión Europea, Reino Unido y Estados Unidos.">
-            <select value={values.countryCode} onChange={(e) => setField('countryCode', e.target.value)} required>
-              <option value="">Selecciona un país</option>
-              {catalog.data.taxRates.map((r) => (
-                <option key={r.countryCode} value={r.countryCode}>
-                  {r.countryName}
-                </option>
-              ))}
-            </select>
-          </FormField>
-          <FormField label="Identificador fiscal" error={errors.taxId} hint="En España: DNI, NIE, NIF (K, L, M) o CIF.">
-            <input value={values.taxId} onChange={(e) => setField('taxId', e.target.value)} autoComplete="off" required />
-          </FormField>
-          {form.existingId !== null && (
-            <p>
-              <Link to={`/customers/${form.existingId}`}>Ver el cliente existente</Link>
-            </p>
-          )}
-          <FormField label="Email de contacto" error={errors.email}>
-            <input type="email" value={values.email} onChange={(e) => setField('email', e.target.value)} autoComplete="email" required />
-          </FormField>
-          <FormField label="Plan" error={errors.planCode}>
-            <select value={values.planCode} onChange={(e) => setField('planCode', e.target.value)} required>
-              <option value="">Selecciona un plan</option>
-              {catalog.data.plans.map((p) => (
-                <option key={p.code} value={p.code}>
-                  {p.name} ({formatInteger(p.storageGb)} GB, {formatInteger(p.apiCalls)} llamadas/mes)
-                </option>
-              ))}
-            </select>
-          </FormField>
-          <div className="form__actions">
+          <div className="form__grid">
+            <FormField label="Nombre de la empresa" error={errors.companyName} className="field--full">
+              <input value={values.companyName} onChange={(e) => setField('companyName', e.target.value)} autoComplete="organization" required />
+            </FormField>
+            <FormField label="País" error={errors.countryCode} hint="Solo Unión Europea, Reino Unido y Estados Unidos.">
+              <select value={values.countryCode} onChange={(e) => setField('countryCode', e.target.value)} required>
+                <option value="">Selecciona un país</option>
+                {catalog.data.taxRates.map((r) => (
+                  <option key={r.countryCode} value={r.countryCode}>
+                    {r.countryName}
+                  </option>
+                ))}
+              </select>
+            </FormField>
+            <FormField label="Identificador fiscal" error={errors.taxId} hint="En España: DNI, NIE, NIF (K, L, M) o CIF.">
+              <input value={values.taxId} onChange={(e) => setField('taxId', e.target.value)} autoComplete="off" required />
+            </FormField>
+            {form.existingId !== null && (
+              <p className="field--full">
+                <Link to={`/customers/${form.existingId}`}>Ver el cliente existente</Link>
+              </p>
+            )}
+            <FormField label="Email de contacto" error={errors.email}>
+              <input type="email" value={values.email} onChange={(e) => setField('email', e.target.value)} autoComplete="email" required />
+            </FormField>
+            <FormField label="Plan" error={errors.planCode}>
+              <select value={values.planCode} onChange={(e) => setField('planCode', e.target.value)} required>
+                <option value="">Selecciona un plan</option>
+                {catalog.data.plans.map((p) => (
+                  <option key={p.code} value={p.code}>
+                    {p.name} ({formatInteger(p.storageGb)} GB, {formatInteger(p.apiCalls)} llamadas/mes)
+                  </option>
+                ))}
+              </select>
+            </FormField>
+          </div>
+          <div className="form__actions form__actions--end">
             <button type="submit" className="button" disabled={form.submitting}>
               {form.submitting ? 'Guardando…' : 'Guardar'}
             </button>
