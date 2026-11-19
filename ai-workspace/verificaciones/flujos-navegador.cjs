@@ -16,9 +16,15 @@ const log = (...a) => console.log(...a);
   await page.getByLabel('Buscar por nombre de empresa o identificador fiscal').fill('facil');
   await page.getByText('1 cliente encontrado').waitFor();
   log('B.5 nombre sin tilde →', await page.locator('.card__title').allInnerTexts());
-  await page.getByLabel('Buscar por nombre de empresa o identificador fiscal').fill('k123');
-  await page.getByText('1 cliente encontrado').waitFor();
-  log('B.5 id fiscal parcial →', await page.locator('.card__title').allInnerTexts());
+  await page.getByLabel('Buscar por nombre de empresa o identificador fiscal').fill('acme');
+  await page.getByRole('link', { name: 'Acme Corporation' }).waitFor();
+  await page.getByLabel('Buscar por nombre de empresa o identificador fiscal').fill('b-123');
+  await page.getByRole('link', { name: 'Fácil Software S.L.' }).waitFor();
+  await page.getByRole('link', { name: 'Acme Corporation' }).waitFor({ state: 'detached' });
+  log('B.5 id fiscal parcial con guion (b-123) →', await page.locator('.card__title').allInnerTexts());
+  await page.getByLabel('Buscar por nombre de empresa o identificador fiscal').fill('zzz');
+  await page.getByText(/No hay clientes que coincidan/).waitFor();
+  log('Estado vacío →', await page.getByText(/No hay clientes que coincidan/).innerText());
 
   // B.7 slider por teclado y desglose; B.10 cambio de divisa
   await page.goto(BASE + '/customers/1/simulate');
@@ -28,7 +34,7 @@ const log = (...a) => console.log(...a);
   log('B.7 teclado 10→15: total =', await page.getByTestId('quote-total').innerText(), '| aria-valuetext =', await slider.getAttribute('aria-valuetext'));
   for (const users of ['10', '11', '50', '51']) {
     await page.getByLabel('Usuarios activos', { exact: true }).fill(users);
-    log(`B.7 ${users} usuarios: base =`, await page.locator('.quote__totals dd').first().innerText());
+    log(`B.7 ${users} usuarios: base =`, await page.locator('dt:text-is("Coste base") + dd').first().innerText());
   }
   await page.getByLabel('Usuarios activos', { exact: true }).fill('15');
   await page.getByLabel('Divisa').selectOption('USD');
