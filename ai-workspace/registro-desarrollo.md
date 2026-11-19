@@ -349,3 +349,12 @@ era correcto nunca se confirmaba. Para el comercial era como si no se comprobara
 **Verificación:** 16 tests nuevos (239 en total) · navegador real: error al salir del campo, confirmación al
 corregir, axe sin violaciones (incluido contraste del mensaje verde) · capturas `alta-nif-error.png` y
 `alta-nif-valido.png` · lint y typecheck sin errores.
+
+---
+
+## Revisión completa contra el documento original (tras el rediseño visual)
+
+Se repasaron uno a uno los requisitos del enunciado sobre la versión con el rediseño visual, con base de
+datos nueva y servicios externos reales. Todo cumple; se corrigieron tres defectos (subtotal oculto en móvil,
+error de favicon en consola y un script de verificación desactualizado). Detalle y tabla de trazabilidad en
+[`verificacion-final.md`](./verificacion-final.md#revisión-contra-el-documento-original-del-reto-19112026-tras-el-rediseño-visual).

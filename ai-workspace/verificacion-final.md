@@ -127,3 +127,49 @@ sincronizados y `EL → GR`.
 - **`better-sqlite3` 13.2.0** se publicó el 14/11/2026. Se eligió porque es la primera línea que trae los
   binarios dentro del paquete. Alternativa más veterana: 12.11.x (descarga el binario en la instalación).
 - **NVDA** (C.17) queda para revisión manual.
+
+---
+
+# Revisión contra el documento original del reto (19/11/2026, tras el rediseño visual)
+
+Segunda verificación completa, esta vez requisito a requisito del enunciado (`Prueba Devs con IA`),
+sobre la versión con el rediseño visual. Base de datos recreada desde cero, VATcomply y open.er-api.com reales.
+
+## 2.A Backend
+
+| Requisito del enunciado | Evidencia | Estado |
+|---|---|---|
+| Node.js (TypeScript) + SQLite | Express 5 + better-sqlite3 | ✔ |
+| `POST /customers` con empresa, identificador fiscal, email, país y plan | Alta real de clientes de ES, FR y SE | ✔ |
+| Validación algorítmica estricta del identificador si el país es España | DNI, NIE, NIF K y CIF falsos → 422; formato desconocido → 422 | ✔ |
+| `POST /simulations` (cliente, usuarios, almacenamiento, llamadas API) persistido | Fila comprobada en la tabla `simulations` | ✔ |
+| Tarificación acumulativa por tramos (10 € / 8 € / 5 €) | Ejemplo del enunciado: 15 usuarios = 140 €; 120 usuarios = 770 € | ✔ |
+| Sumar el IVA del país del cliente | ES 21 % → 169,40 €; FR 20 % → 168,00 €; SE 25 % → 962,50 € | ✔ |
+
+## 2.B Frontend
+
+| Requisito del enunciado | Evidencia | Estado |
+|---|---|---|
+| API pública de tipos de cambio y cambio de divisa en tiempo real | USD 185,90 US$ y GBP 141,28 GBP para 169,40 € | ✔ |
+| Buscador por nombre de empresa o identificador fiscal | Nombre sin tildes («facil») y NIF parcial con guion («b-123»); estado vacío | ✔ |
+| Detalle del cliente en tarjetas responsive con historial de simulaciones | 360 / 768 / 1280 px sin desbordes | ✔ |
+| Slider con proyección de la factura en tiempo real en la divisa elegida | 10 / 11 / 50 / 51 usuarios → 100 / 108 / 420 / 425 €; slider con teclado | ✔ |
+| Interfaz responsive y estados de carga/error con la API externa | Sin divisas → aviso y EUR; backend parado → error con «Reintentar» | ✔ |
+
+## Calidad y accesibilidad tras el rediseño
+
+- 239 tests · lint y typecheck sin errores · ningún fichero > 200 líneas · 0 `any`.
+- axe sin violaciones en 5 vistas × 3 anchos · recorrido solo con teclado con foco visible.
+- Lighthouse: **accesibilidad 100** y **buenas prácticas 100** en las 4 vistas.
+
+## Defectos encontrados en esta revisión y corregidos
+
+1. **Subtotal oculto en móvil.** Con el rediseño, la tabla de desglose medía hasta 348 px en un espacio de
+   278 px (pantalla de 360 px): la columna «Subtotal» quedaba fuera de la vista. Se permite partir
+   «Precio/usuario» y se compacta la tabla solo en móvil, manteniendo el punto de color, que sirve de
+   leyenda de la barra de tramos. Medido con 10, 60 y 10.000 usuarios: cabe en los tres casos.
+2. **Error en consola en todas las páginas** (`favicon.ico` 404, detectado por Lighthouse). Se añade un
+   favicon SVG con el logotipo del rediseño. Buenas prácticas: de 96 a 100.
+3. **Script de verificación desactualizado.** `flujos-navegador.cjs` usaba una clase de CSS que el rediseño
+   eliminó y tenía una carrera con el debounce del buscador (leía resultados de la búsqueda anterior). Ahora
+   espera al resultado concreto y localiza los importes por su etiqueta visible, no por clases de estilo.
