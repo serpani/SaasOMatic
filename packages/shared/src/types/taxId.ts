@@ -1,4 +1,4 @@
-export type TaxIdType = 'DNI' | 'NIE' | 'CIF' | 'OTHER';
+export type TaxIdType = 'DNI' | 'NIE' | 'NIF_KLM' | 'CIF' | 'OTHER';
 
 export type TaxIdErrorCode = 'TAX_ID_REQUIRED' | 'TAX_ID_INVALID_FORMAT' | 'TAX_ID_INVALID_CONTROL';
 

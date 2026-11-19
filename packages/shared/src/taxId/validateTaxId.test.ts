@@ -36,6 +36,24 @@ describe('validateTaxId — NIE', () => {
   });
 });
 
+describe('validateTaxId — NIF K, L y M', () => {
+  it.each(['K1234567L', 'L1234567L', 'M1234567L', 'K0000001R'])('acepta %s', (id) => {
+    expect(validateTaxId(id, 'ES')).toMatchObject({ valid: true, type: 'NIF_KLM' });
+  });
+
+  it.each(['K1234567A', 'L1234567Z', 'M1234567T'])('rechaza %s por letra de control', (id) => {
+    expect(validateTaxId(id, 'ES')).toMatchObject({ valid: false, code: 'TAX_ID_INVALID_CONTROL' });
+  });
+
+  it.each(['K123456L', 'L12345678L', 'M12345674'])('rechaza el formato %s', (id) => {
+    expect(validateTaxId(id, 'ES')).toMatchObject({ valid: false, code: 'TAX_ID_INVALID_FORMAT' });
+  });
+
+  it('se normaliza igual que el resto (k-1234567-l)', () => {
+    expect(validateTaxId('k-1234567-l', 'ES')).toMatchObject({ valid: true, normalized: 'K1234567L' });
+  });
+});
+
 describe('validateTaxId — CIF', () => {
   it('acepta B12345674', () => {
     expect(validateTaxId('B12345674', 'ES')).toEqual({ valid: true, normalized: 'B12345674', type: 'CIF' });
