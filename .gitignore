@@ -10,3 +10,4 @@ coverage/
 *.db-shm
 .vite/
 apps/api/data/
+.DS_Store

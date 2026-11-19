@@ -1,6 +1,6 @@
-"""Genera ai-workspace/tutorial-de-uso.pdf (guía para el equipo comercial).
+"""Genera ai-workspace/docs/tutorial-de-uso.pdf (guía para el equipo comercial).
 
-Uso: python3 ai-workspace/fuentes/generar-tutorial.py
+Uso: python3 ai-workspace/arquitectura/fuentes/generar-tutorial.py
 Requiere: pip install reportlab
 """
 from pathlib import Path
@@ -12,7 +12,7 @@ from reportlab.lib.styles import ParagraphStyle, getSampleStyleSheet
 from reportlab.lib.units import mm
 from reportlab.platypus import KeepTogether, ListFlowable, ListItem, Paragraph, SimpleDocTemplate, Spacer, Table, TableStyle
 
-OUT = Path(__file__).resolve().parent.parent / 'tutorial-de-uso.pdf'
+OUT = Path(__file__).resolve().parents[2] / 'docs' / 'tutorial-de-uso.pdf'
 TITLE_BLUE = colors.HexColor('#1d4e89')
 HEAD_BLUE = colors.HexColor('#2f75c8')
 

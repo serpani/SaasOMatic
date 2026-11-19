@@ -101,4 +101,4 @@ ai-workspace     Especificaciones, decisiones y proceso con IA
 
 ## Cómo se usa
 
-La guía para el equipo comercial está en [`ai-workspace/tutorial-de-uso.pdf`](./ai-workspace/tutorial-de-uso.pdf): buscar clientes, darlos de alta, simular una factura y cambiar la divisa.
+La guía para el equipo comercial está en [`ai-workspace/docs/tutorial-de-uso.pdf`](./ai-workspace/docs/tutorial-de-uso.pdf): buscar clientes, darlos de alta, simular una factura y cambiar la divisa.

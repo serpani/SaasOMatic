@@ -70,7 +70,7 @@ Normalizar (mayúsculas, sin espacios ni guiones). Si país = ES: DNI (8 dígito
 2. `packages/shared`: pricing + taxId con tests (ver plan de pruebas).
 3. API: BD, migraciones, seeds, sync de IVA, endpoints, errores, tests de integración.
 4. Web: http client con timeouts, divisas, vistas.
-5. Verificación completa según `ai-workspace/plan-de-pruebas.pdf` y README.
+5. Verificación completa según `ai-workspace/docs/plan-de-pruebas.pdf` y README.
 
 ## Casos de prueba mínimos
 Tramos: 1→10 €, 10→100 €, 11→108 €, 15→140 €, 50→420 €, 51→425 €, 100→670 €; 0, 10001, decimales y negativos rechazados. IVA ES 21 % sobre 140 € → 29,40 € / 169,40 €. DNI 12345678Z válido, 12345678A inválido; CIF B12345674 válido. País JP vía API → 422. taxId duplicado → 409. Cambiar un tramo no altera simulaciones antiguas. axe sin violaciones en todas las vistas.

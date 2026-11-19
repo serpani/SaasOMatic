@@ -35,4 +35,4 @@ node ai-workspace/verificaciones/flujos-navegador.cjs <carpeta-capturas>
 
 A diferencia de jsdom, en un navegador real axe **sí mide el contraste de color**. Resultado final:
 15/15 combinaciones sin violaciones de axe, sin scroll horizontal y sin errores en consola. Las capturas
-están en `ai-workspace/capturas/`.
+están en `ai-workspace/evidencias pruebas/`.
