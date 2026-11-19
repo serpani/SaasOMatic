@@ -1,4 +1,4 @@
-import { screen, waitFor } from '@testing-library/react';
+import { screen, waitFor, within } from '@testing-library/react';
 import { describe, expect, it } from 'vitest';
 import { axe } from 'vitest-axe';
 import { apiError, callsTo, json, mockFetch } from '../../../test/fetchMock';
@@ -60,10 +60,19 @@ describe('Buscador y dashboard', () => {
     expect(callsTo(fetchMock, 'GET', '/customers').at(-1)?.[0]).toContain('page=2');
   });
 
-  it('pone el foco en el título al entrar en la vista', async () => {
+  it('en la carga inicial no mueve el foco (el primer Tab llega a «Saltar al contenido»)', async () => {
     mockFetch();
-    renderApp('/');
-    expect(screen.getByRole('heading', { level: 1, name: 'Clientes' })).toHaveFocus();
+    const { user } = renderApp('/');
+    expect(screen.getByRole('heading', { level: 1, name: 'Clientes' })).not.toHaveFocus();
+    await user.tab();
+    expect(screen.getByRole('link', { name: 'Saltar al contenido' })).toHaveFocus();
+  });
+
+  it('al navegar a otra vista pone el foco en su título', async () => {
+    mockFetch();
+    const { user } = renderApp('/');
+    await user.click(within(screen.getByRole('navigation', { name: 'Principal' })).getByRole('link', { name: 'Nuevo cliente' }));
+    expect(await screen.findByRole('heading', { level: 1, name: 'Nuevo cliente' })).toHaveFocus();
   });
 
   it('no tiene violaciones de accesibilidad (axe)', async () => {
