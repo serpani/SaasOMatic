@@ -34,15 +34,26 @@
   font-size: 0.875rem;
 }
 
-.field__error {
+.field__message {
   margin: var(--space-1) 0 0;
-  color: var(--color-error);
   font-weight: 600;
   font-size: 0.9375rem;
 }
 
-.field__error:empty {
+.field__message:empty {
   display: none;
+}
+
+.field__message--error {
+  color: var(--color-error);
+}
+
+.field__message--success {
+  color: var(--color-success-text);
+}
+
+.field__message--info {
+  color: var(--color-muted);
 }
 
 input:not([type='range']),
@@ -68,6 +79,10 @@ select:focus-visible {
 .field--invalid input,
 .field--invalid select {
   border: 2px solid var(--color-error);
+}
+
+.field--valid input {
+  border: 2px solid var(--color-success-text);
 }
 
 .form__actions {

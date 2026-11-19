@@ -1,46 +1,52 @@
-import { type CreateCustomerInput, validateTaxId } from '@saasomatic/shared';
+import type { CreateCustomerInput } from '@saasomatic/shared';
 import { useState } from 'react';
 import { ApiError } from '../../../shared/http/apiClient';
 import { createCustomer } from '../api/customersApi';
+import { type CustomerField, describeTaxId, type FieldErrors, validateCustomer } from './customerValidation';
 
-export type CustomerField = keyof CreateCustomerInput;
-export type FieldErrors = Partial<Record<CustomerField, string>>;
+export type { CustomerField, FieldErrors } from './customerValidation';
 
 const EMPTY: CreateCustomerInput = { companyName: '', taxId: '', email: '', countryCode: '', planCode: '' };
-const EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-/** Validación inmediata en el navegador. El backend vuelve a validarlo todo (no se confía en el frontend). */
-export function validateCustomer(values: CreateCustomerInput): FieldErrors {
-  const errors: FieldErrors = {};
-  if (!values.companyName.trim()) errors.companyName = 'Introduce el nombre de la empresa.';
-  if (!values.email.trim()) errors.email = 'Introduce el email de contacto.';
-  else if (!EMAIL.test(values.email.trim())) errors.email = 'El email de contacto no es válido.';
-  if (!values.countryCode) errors.countryCode = 'Selecciona un país.';
-  if (!values.planCode) errors.planCode = 'Selecciona un plan.';
-  if (!values.taxId.trim()) errors.taxId = 'Introduce el identificador fiscal.';
-  else if (values.countryCode) {
-    const result = validateTaxId(values.taxId, values.countryCode);
-    if (!result.valid) errors.taxId = result.message;
-  }
-  return errors;
-}
-
+/**
+ * Estado del alta de cliente. Cada campo con contenido se valida al salir de él y, desde entonces, en cada
+ * cambio; el identificador fiscal se vuelve a comprobar si cambia el país. Al guardar se validan todos.
+ */
 export function useCustomerForm(onCreated: (id: number) => void) {
   const [values, setValues] = useState<CreateCustomerInput>(EMPTY);
   const [errors, setErrors] = useState<FieldErrors>({});
+  const [touched, setTouched] = useState<ReadonlySet<CustomerField>>(new Set());
   const [formError, setFormError] = useState<string | null>(null);
   const [existingId, setExistingId] = useState<number | null>(null);
   const [submitting, setSubmitting] = useState(false);
   const [attempt, setAttempt] = useState(0);
 
+  /** Recalcula el error de los campos indicados con los valores dados. */
+  const revalidate = (next: CreateCustomerInput, fields: CustomerField[]) => {
+    const all = validateCustomer(next);
+    setErrors((prev) => ({ ...prev, ...Object.fromEntries(fields.map((f) => [f, all[f]])) }));
+  };
+
   const setField = (field: CustomerField, value: string) => {
-    setValues((prev) => ({ ...prev, [field]: value }));
-    setErrors((prev) => ({ ...prev, [field]: undefined }));
+    const next = { ...values, [field]: value };
+    setValues(next);
+    if (field === 'taxId') setExistingId(null);
+    const live = [field, ...(field === 'countryCode' ? (['taxId'] as const) : [])].filter((f) => touched.has(f));
+    if (live.length > 0) revalidate(next, live);
+    else setErrors((prev) => ({ ...prev, [field]: undefined }));
+  };
+
+  /** Valida al salir del campo, salvo si está vacío: «es obligatorio» se indica al pulsar Guardar. */
+  const blur = (field: CustomerField) => {
+    if (!values[field].trim()) return;
+    setTouched((prev) => new Set(prev).add(field));
+    revalidate(values, [field]);
   };
 
   async function submit(): Promise<void> {
     setFormError(null);
     setExistingId(null);
+    setTouched(new Set(Object.keys(EMPTY) as CustomerField[]));
     const clientErrors = validateCustomer(values);
     setErrors(clientErrors);
     setAttempt((n) => n + 1);
@@ -77,5 +83,7 @@ export function useCustomerForm(onCreated: (id: number) => void) {
     setErrors(Object.fromEntries(fieldErrors.map((e) => [e.field, e.message])) as FieldErrors);
   }
 
-  return { values, errors, formError, existingId, submitting, attempt, setField, submit };
+  const taxIdStatus = errors.taxId ? null : describeTaxId(values.taxId, values.countryCode);
+
+  return { values, errors, taxIdStatus, formError, existingId, submitting, attempt, setField, blur, submit };
 }

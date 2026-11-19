@@ -15,7 +15,7 @@ export function NewCustomerPage() {
   const form = useCustomerForm((id) =>
     navigate(`/customers/${id}`, { state: { flash: 'Cliente dado de alta correctamente.' } }),
   );
-  const { values, errors, setField } = form;
+  const { values, errors, setField, blur } = form;
 
   // Tras un envío con errores, el foco va al primer campo que hay que corregir.
   useEffect(() => {
@@ -37,10 +37,10 @@ export function NewCustomerPage() {
           {form.formError && <ErrorState message={form.formError} />}
           <div className="form__grid">
             <FormField label="Nombre de la empresa" error={errors.companyName} className="field--full">
-              <input value={values.companyName} onChange={(e) => setField('companyName', e.target.value)} autoComplete="organization" required />
+              <input value={values.companyName} onChange={(e) => setField('companyName', e.target.value)} onBlur={() => blur('companyName')} autoComplete="organization" required />
             </FormField>
             <FormField label="País" error={errors.countryCode} hint="Solo Unión Europea, Reino Unido y Estados Unidos.">
-              <select value={values.countryCode} onChange={(e) => setField('countryCode', e.target.value)} required>
+              <select value={values.countryCode} onChange={(e) => setField('countryCode', e.target.value)} onBlur={() => blur('countryCode')} required>
                 <option value="">Selecciona un país</option>
                 {catalog.data.taxRates.map((r) => (
                   <option key={r.countryCode} value={r.countryCode}>
@@ -49,8 +49,13 @@ export function NewCustomerPage() {
                 ))}
               </select>
             </FormField>
-            <FormField label="Identificador fiscal" error={errors.taxId} hint="En España: DNI, NIE, NIF (K, L, M) o CIF.">
-              <input value={values.taxId} onChange={(e) => setField('taxId', e.target.value)} autoComplete="off" required />
+            <FormField
+              label="Identificador fiscal"
+              error={errors.taxId}
+              status={form.taxIdStatus}
+              hint="En España se comprueba la letra o dígito de control de DNI, NIE, NIF (K, L, M) y CIF."
+            >
+              <input value={values.taxId} onChange={(e) => setField('taxId', e.target.value)} onBlur={() => blur('taxId')} autoComplete="off" required />
             </FormField>
             {form.existingId !== null && (
               <p className="field--full">
@@ -58,10 +63,10 @@ export function NewCustomerPage() {
               </p>
             )}
             <FormField label="Email de contacto" error={errors.email}>
-              <input type="email" value={values.email} onChange={(e) => setField('email', e.target.value)} autoComplete="email" required />
+              <input type="email" value={values.email} onChange={(e) => setField('email', e.target.value)} onBlur={() => blur('email')} autoComplete="email" required />
             </FormField>
             <FormField label="Plan" error={errors.planCode}>
-              <select value={values.planCode} onChange={(e) => setField('planCode', e.target.value)} required>
+              <select value={values.planCode} onChange={(e) => setField('planCode', e.target.value)} onBlur={() => blur('planCode')} required>
                 <option value="">Selecciona un plan</option>
                 {catalog.data.plans.map((p) => (
                   <option key={p.code} value={p.code}>
