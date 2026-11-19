@@ -47,3 +47,24 @@
     padding: var(--space-2);
   }
 }
+
+/* Móvil: compacta la tabla para que el subtotal se vea sin desplazar (360 px). */
+@media (max-width: 39.99em) {
+  .breakdown th,
+  .breakdown td {
+    padding: var(--space-2) 0.125rem;
+    font-size: 0.8125rem;
+  }
+
+  .breakdown thead th {
+    font-size: 0.6875rem;
+    letter-spacing: 0;
+  }
+
+  /* Se mantiene el punto: es la leyenda de color de la barra de tramos. */
+  .breakdown .tier-dot {
+    width: 0.5rem;
+    height: 0.5rem;
+    margin-right: 0.25rem;
+  }
+}

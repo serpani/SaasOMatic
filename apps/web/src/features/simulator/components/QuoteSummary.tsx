@@ -39,7 +39,7 @@ export function QuoteSummary({ quote }: { quote: Quote }) {
             <tr>
               <th scope="col">Tramo</th>
               <th scope="col">Usuarios</th>
-              <th scope="col">Precio/usuario</th>
+              <th scope="col">Precio/<wbr />usuario</th>
               <th scope="col">Subtotal</th>
             </tr>
           </thead>
